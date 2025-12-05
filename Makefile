@@ -1,13 +1,14 @@
 NAME		=	ircserv
 
-INC_DIR		=	includes/
-SRC_DIR		=	sources/
-OBJ_DIR		=	objects/
+INC_DIR		=	inc/
+SRC_DIR		=	src/
+OBJ_DIR		=	obj/
 
 CXX			=	c++ -Wall -Werror -Wextra -std=c++98
 RM			=	rm -f
 
-SRCS			=	$(SRC_DIR)main.cpp
+SRCS			=	$(SRC_DIR)main.cpp \
+					$(SRC_DIR)server.cpp
 
 OBJS			=	$(patsubst $(SRC_DIR)%.cpp,$(OBJ_DIR)%.o,$(SRCS))
 
