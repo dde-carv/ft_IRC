@@ -1,4 +1,4 @@
-#include "server.hpp"
+#include "Server.hpp"
 
 int	main(int ac, char** av)
 {
@@ -16,6 +16,8 @@ int	main(int ac, char** av)
 
 	try
 	{
+		// signal(SIGINT, Server::signalHandler);
+		// signal(SIGQUIT, Server::signalHandler);
 		server.serverInit();
 	}
 	catch(const std::exception &e)

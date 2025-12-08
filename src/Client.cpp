@@ -1,0 +1,107 @@
+#include "Client.hpp"
+
+Client::Client()
+{
+	this->_fd = -1;
+	this->_nickName = "";
+	this->_userName = "";
+	this->_operator = false;
+	this->_registered = false;;
+	this->_logedIn = false;
+}
+
+Client::Client(int fd, std::string nickname, std::string username)
+{
+	fd = _fd;
+	nickname = _nickName;
+	username = _userName;
+}
+
+Client::Client(Client const &og)
+{
+	*this = og;
+}
+
+Client&	Client::operator=(Client const &og)
+{
+	if (this != &og)
+	{
+		this->_fd = og._fd;
+		this->_nickName = og._nickName;
+		this->_userName = og._userName;
+	}
+	return *this;
+}
+
+Client::~Client()
+{}
+
+// getters
+
+int	Client::getFd()
+{
+	return this->_fd;
+}
+
+std::string	Client::getNickName()
+{
+	return this->_nickName;
+}
+
+std::string	Client::getUserName()
+{
+	return this->_userName;
+}
+
+std::string Client::getHostname()
+{
+	std::string hostname = this->getNickName() + "!" + this->getUserName();
+	return hostname;
+}
+
+bool	Client::getOperator()
+{
+	return this->_operator;
+}
+
+bool	Client::getRegistered()
+{
+	return this->_registered;
+}
+
+bool	Client::getLogenIn()
+{
+	return this->_logedIn;
+}
+
+// setters
+
+void	Client::setFd(int fd)
+{
+	this->_fd = fd;
+}
+
+void	Client::setNickName(std::string& nickname)
+{
+	this->_nickName = nickname;
+}
+
+void	Client::setUserName(std::string& username)
+{
+	this->_userName = username;
+}
+
+void	Client::setOperator(bool value)
+{
+	this->_operator = value;
+}
+
+void	Client::setRegistered(bool value)
+{
+	this->_registered = value;
+}
+
+void	Client::setLogedin(bool value)
+{
+	this->_logedIn = value;
+}
