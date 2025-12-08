@@ -30,18 +30,18 @@
 class Channel
 {
 	private:
-		std::string			channelName;
-		std::string			channelCreation;
-		std::vector<Client>	clients;
-		std::vector<Client>	admins;
-		bool				inviteOnly;
-		bool				key;
-		std::string			password;
-		std::string			channelTopic;
-		bool				topicRestriction;
-		std::string			topicCreation;
-		unsigned int		limitOfClients;
-		std::vector<std::pair<char, bool>> modes;
+		std::string			_channelName;
+		std::string			_channelCreation;
+		std::vector<Client>	_clients;
+		std::vector<Client>	_admins;
+		bool				_inviteOnly;
+		bool				_key;
+		std::string			_password;
+		std::string			_channelTopic;
+		bool				_topicRestriction;
+		std::string			_topicCreation;
+		unsigned int		_limitOfClients;
+		std::vector<std::pair<char, bool>> _modes;
 
 	public:
 
