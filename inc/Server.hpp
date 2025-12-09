@@ -1,18 +1,18 @@
 #pragma once
 
 #include <iostream>
-#include <fstream>			//-> for stream files
-#include <unistd.h>			//-> for close()
+#include <fstream>
+#include <unistd.h>
 #include <string.h>
 #include <cstdlib>
-#include <csignal>			//-> for signals
-#include <ctime>			//-> for time stamps
-#include <vector>			//-> for vector container
-#include <map>				//-> for map container
-#include <sys/socket.h>		//-> for socket()
-#include <sys/types.h>		//-> for socket()
-#include <netinet/in.h>		//-> for sockaddr_in
-#include <arpa/inet.h>		//-> for inet_ntoa()
+#include <csignal>
+#include <ctime>
+#include <vector>
+#include <map>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <netdb.h>
 #include <fcntl.h>
 #include <poll.h>
@@ -26,16 +26,16 @@ class Channel;
 class Server
 {
 	private:
-		int _port;
-		int _serverSocketFd;
-		static bool _signal;
-		std::string _password;
-		std::vector<Client> _clients;
-		std::vector<Channel> _channels;
-		std::vector<struct pollfd> _clientSocketFds;
-		struct sockaddr_in serverAddress;
-		struct sockaddr_in clientAddress;
-		struct pollfd newClient;
+		int	_port;
+		int	_serverSocketFd;
+		static bool	_signal;
+		std::string	_password;
+		std::vector<Client>	_clients;
+		std::vector<Channel>	_channels;
+		std::vector<struct pollfd>	_clientSocketFds;
+		struct sockaddr_in	serverAddress;
+		struct sockaddr_in	clientAddress;
+		struct pollfd	newClient;
 
 	public:
 		// default constructor

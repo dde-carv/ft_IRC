@@ -230,7 +230,7 @@ void	Server::removeChannel(std::string name)
 	}
 }
 
-// void	Server::removeChannels(int fd)
+/* void	Server::removeChannels(int fd)
 {
 	for (size_t i = 0; i < this->_channels.size(); i++)
 	{
@@ -253,12 +253,10 @@ void	Server::removeChannel(std::string name)
 			_channels[i].sendTo_all(rpl);
 		}
 	}
-}
+} */
 
 void	endConnection(int fd)
-{
-
-}
+{}
 
 // close methods
 
