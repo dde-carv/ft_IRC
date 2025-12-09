@@ -24,7 +24,7 @@ class Channel
 		bool				_topicRestriction;
 		std::string			_topicCreation;
 		unsigned int		_limitOfClients;
-		std::vector<std::pair<char, bool>> _modes;
+		std::vector<std::pair<char, bool> > _modes;
 
 	public:
 

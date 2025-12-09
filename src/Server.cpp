@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server() : _signal(false),_serverSocketFd(-1)
+Server::Server() : _serverSocketFd(-1), _signal(false)
 {}
 
 Server::Server(Server const &og)
@@ -123,8 +123,8 @@ void	Server::socketInit()
 
 	if (this->_serverSocketFd == -1)
 		throw (std::runtime_error("Failed to create server socket"));
-
-	if (setsockopt(_serverSocketFd,SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt) < 0 ))
+	std::cout << _serverSocketFd << std::endl;
+	if (setsockopt(_serverSocketFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0 )
 		throw (std::runtime_error("Failed to set option (SP_REUSEADDR) on socket"));
 
 	if (fcntl(_serverSocketFd, F_SETFL, O_NONBLOCK) == -1)
@@ -159,7 +159,7 @@ void	Server::acceptNewClient()
 
 	Client client;
 	memset(&clientAddress, 0, sizeof(clientAddress));
-	socklen_t len = sizeof(clientAddress);
+	// socklen_t len = sizeof(clientAddress);
 	newClient.fd = newFd;
 	newClient.events = POLLIN;
 	newClient.revents = 0;
@@ -177,16 +177,16 @@ void	Server::receiveNewData(int fd)
 	ssize_t  bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
 	if (bytes == -1)
 		std::cout << "recv() failed." << std::endl;
-	else if (bytes == 0)
-		endConnection(fd);
-	else
-		handleMessage(fd, buffer);
+	// else if (bytes == 0)
+	// 	endConnection(fd);
+	// else
+	// 	handleMessage(fd, buffer);
 }
 
-void	handleMessage(int fd, char *buffer)
-{
+// void	handleMessage(int fd, char *buffer)
+// {
 
-}
+// }
 
 // remove methods
 
@@ -251,8 +251,16 @@ void	Server::removeChannel(std::string name)
 	}
 } */
 
-void	endConnection(int fd)
-{}
+// void	endConnection(int fd)
+// {}
+
+// send
+void	senderror(int code, std::string clientname, int fd, std::string msg)
+{
+	
+}
+
+void	senderror(int code, std::string clientname, std::string channelname, int fd, std::string msg);
 
 // close methods
 
@@ -279,7 +287,7 @@ void Server::signalHandler(int signum)
 	Server::_signal = true;
 }
 
-
+// parsing methods
 
 std::vector<std::string> splitCmd(std::string &str)
 {

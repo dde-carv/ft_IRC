@@ -1,6 +1,5 @@
 #include "../../inc/Server.hpp"
 
-
 //* Syntax: join/JOIN #<channel> <key>(optional) or join/JOIN #<channel>{,<channel>} <key>{,<key>}(optional)
 //* Ex.: JOIN #lol password | join #chat,#development password | join #chat,#development password,password2
 

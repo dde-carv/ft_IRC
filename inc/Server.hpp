@@ -5,10 +5,12 @@
 #include <unistd.h>
 #include <string>
 #include <cstdlib>
+#include <cstring>
 #include <csignal>
 #include <ctime>
 #include <vector>
 #include <map>
+#include <sstream>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -65,14 +67,14 @@ class Server
 		void	socketInit();
 		void	acceptNewClient();
 		void	receiveNewData(int fd);
-		void	handleMessage(int fd, char *buffer);
+		// void	handleMessage(int fd, char *buffer);
 
 		// remove methods
 		void	removeFds(int fd);
 		void	removeClient(int fd);
 		void	removeChannel(std::string name);
 		// void	removeChannels(int fd);
-		void	endConnection(int fd);
+		// void	endConnection(int fd);
 
 		// send
 		void	senderror(int code, std::string clientname, int fd, std::string msg);

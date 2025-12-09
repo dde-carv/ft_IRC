@@ -4,7 +4,7 @@ INC_DIR		=	inc/
 SRC_DIR		=	src/
 OBJ_DIR		=	obj/
 
-CXX			=	c++ -Wall -Werror -Wextra -std=c++98
+CXX			=	c++ -Wall -Werror -std=c++98
 RM			=	rm -f
 
 SRCS			=	$(SRC_DIR)main.cpp \
