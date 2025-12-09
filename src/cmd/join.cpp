@@ -1,4 +1,4 @@
-#include "../../inc/server.hpp"
+#include "../../inc/Server.hpp"
 #include <sstream>
 
 //* Syntax: join/JOIN #<channel> <key>(optional) or join/JOIN #<channel>{,<channel>} <key>{,<key>}(optional)

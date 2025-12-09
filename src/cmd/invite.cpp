@@ -1,4 +1,4 @@
-#include "../../inc/server.hpp"
+#include "../../inc/Server.hpp"
 
 //* Syntax: invite/INVITE <nickname> #<channel>
 //* Ex.: invite dicarval #bocal
