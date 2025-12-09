@@ -17,6 +17,9 @@
 #include <fcntl.h>
 #include <poll.h>
 
+#include "Client.hpp"
+#include "Channel.hpp"
+
 class Client;
 class Channel;
 
@@ -28,7 +31,7 @@ class Server
 		static bool _signal;
 		std::string _password;	//->
 		std::vector<Client> _clients;	//-> vector of clients
-		// std::vector<Channel> _channels;	//-> vector of channels
+		std::vector<Channel> _channels;	//-> vector of channels
 		std::vector<struct pollfd> _clientSocketFds;	//-> vector of fds
 		struct sockaddr_in serverAddress;
 		struct sockaddr_in clientAddress;
@@ -48,6 +51,10 @@ class Server
 		int	getSocketFd();
 		int	getPort();
 		std::string getPassword();
+
+		Client*	getClientFd(int fd);
+		Client*	getClientNick(std::string nickname);
+		Channel*	getChannel(std::string name);
 
 		// setters
 		void	setFd(int fd);

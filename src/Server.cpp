@@ -27,6 +27,8 @@ Server&	Server::operator=(Server const &og)
 Server::~Server()
 {}
 
+// getters
+
 int	Server::getSocketFd()
 {
 	return this->_serverSocketFd;
@@ -40,6 +42,36 @@ int	Server::getPort()
 std::string Server::getPassword()
 {
 	return this->_password;
+}
+
+Client*	Server::getClientFd(int fd)
+{
+	for (size_t i = 0; i < this->_clients.size(); i++)
+	{
+		if (this->_clients[i].getFd() == fd)
+			return &this->_clients[i];
+	}
+	return NULL;
+}
+
+Client*	Server::getClientNick(std::string nickname)
+{
+	for (size_t i = 0; i < this->_clients.size(); i++)
+	{
+		if (this->_clients[i].getNickName() == nickname)
+			return &this->_clients[i];
+	}
+	return NULL;
+}
+
+Channel*	Server::getChannel(std::string name)
+{
+	for (size_t i = 0; i < this->_channels.size(); i++)
+	{
+		if (this->_channels[i].getName() == name)
+			return &_channels[i];
+	}
+	return NULL;
 }
 
 void	Server::setFd(int fd)
@@ -156,22 +188,27 @@ void	endConnection(int fd)
 
 }
 
-void Server::removeFds(int fd){
+void Server::removeFds(int fd)
+{
 	for (size_t i = 0; i < this->_clientSocketFds.size(); i++)
 	{
 		if (this->_clientSocketFds[i].fd == fd)
-			{this->_clientSocketFds.erase(this->_clientSocketFds.begin() + i); return;}
+			{
+				this->_clientSocketFds.erase(this->_clientSocketFds.begin() + i);
+				return ;
+			}
 	}
 }
 
 void	Server::closeFds()
 {
-	// for (size_t i = 0; i < _clients.size(); i++)
-	// {
-	// 	std::cout << "Client <" << _clients[i].GetFd() << "> Disconnected" << WHI << std::endl;
-	// 	close(_clients[i].GetFd());
-	// }
-	if (_serverSocketFd != -1){
+	for (size_t i = 0; i < _clients.size(); i++)
+	{
+		std::cout << "Client <" << _clients[i].getFd() << "> Disconnected" << WHI << std::endl;
+		close(_clients[i].getFd());
+	}
+	if (_serverSocketFd != -1)
+	{
 		std::cout << "Server <" << _serverSocketFd << "> Disconnected" << std::endl;
 		close(_serverSocketFd);
 	}
