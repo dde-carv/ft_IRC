@@ -98,3 +98,8 @@ void	Client::setLogedin(bool value)
 {
 	this->_logedIn = value;
 }
+
+void Client::setIpAdd(std::string ip)
+{
+	this->_ip = ip;
+}

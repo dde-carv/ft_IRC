@@ -97,7 +97,7 @@ void	Server::serverInit()
 	std::cout << "Waiting to accept a connection...\n";
 	while (Server::_signal == false)
 	{
-		if((poll(&_clientSocketFds[0],_clientSocketFds.size(),-1) == -1) && Server::_signal == false)
+		if((poll(&_clientSocketFds[0],_clientSocketFds.size(), -1) == -1) && Server::_signal == false)
 			throw(std::runtime_error("poll() failed"));
 		for (size_t i = 0; i < _clientSocketFds.size(); i++)
 		{
@@ -156,6 +156,8 @@ void	Server::acceptNewClient()
 		std::cout << "ftcnl() nonblock failed." << std::endl;
 		return;
 	}
+	std::cout << "New client: " << newFd << std::endl;
+
 
 	Client client;
 	memset(&clientAddress, 0, sizeof(clientAddress));
@@ -164,7 +166,7 @@ void	Server::acceptNewClient()
 	newClient.events = POLLIN;
 	newClient.revents = 0;
 	client.setFd(newFd);
-	// client.setIpAdd(inet_ntoa((clientAddress.sin_addr)));
+	client.setIpAdd(inet_ntoa((clientAddress.sin_addr)));
 	_clients.push_back(client);
 	_clientSocketFds.push_back(newClient);
 
@@ -175,16 +177,32 @@ void	Server::receiveNewData(int fd)
 	char buffer[1024];
 	bzero(buffer, sizeof(buffer));
 	ssize_t  bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
+	std::cout << buffer << std::endl;
 	if (bytes == -1)
 		std::cout << "recv() failed." << std::endl;
-	// else if (bytes == 0)
-	// 	endConnection(fd);
+	else if (bytes == 0)
+		endConnection(fd);
 	// else
 	// 	handleMessage(fd, buffer);
 }
 
+void	Server::endConnection(int fd)
+{
+	for (std::vector<pollfd>::iterator i = _clientSocketFds.begin(); i != _clientSocketFds.end(); i++)
+	{
+		if (i->fd == fd)
+		{
+			_clientSocketFds.erase(i);
+			removeClient(fd);
+			close(fd);
+			std::cout << "Connection closed: " << fd << std::endl;
+			break ;
+		}
+	}
+}
+
 // void	handleMessage(int fd, char *buffer)
-// {
+// {s
 
 // }
 
@@ -251,8 +269,6 @@ void	Server::removeChannel(std::string name)
 	}
 } */
 
-// void	endConnection(int fd)
-// {}
 
 // send
 void	senderr(int code, std::string clientname, int fd, std::string msg)

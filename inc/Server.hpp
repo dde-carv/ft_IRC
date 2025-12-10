@@ -68,6 +68,7 @@ class Server
 		void	acceptNewClient();
 		void	receiveNewData(int fd);
 		// void	handleMessage(int fd, char *buffer);
+		void	endConnection(int fd);
 
 		// remove methods
 		void	removeFds(int fd);

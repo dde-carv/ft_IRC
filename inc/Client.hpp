@@ -6,6 +6,7 @@ class Client
 {
 	private:
 		int	_fd;
+		std::string _ip;
 		std::string	_nickName;
 		std::string	_userName;
 		bool	_operator;
@@ -42,4 +43,5 @@ class Client
 		void	setOperator(bool value);
 		void	setRegistered(bool value);
 		void	setLogedin(bool value);
+		void	setIpAdd(std::string ip);
 };
