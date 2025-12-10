@@ -29,6 +29,7 @@ class Server
 {
 	private:
 		int	_port;
+		int	_reserveFd;
 		int	_serverSocketFd;
 		bool	_signal;
 		std::string	_password;

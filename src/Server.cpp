@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server() : _serverSocketFd(-1), _signal(false)
+Server::Server() : _reserveFd(-1), _serverSocketFd(-1), _signal(false)
 {}
 
 Server::Server(Server const &og)
@@ -115,6 +115,10 @@ void	Server::serverInit()
 
 void	Server::socketInit()
 {
+	_reserveFd = open("/dev/null", O_RDONLY);
+	if (_reserveFd == -1)
+		std::cerr << "Warning: failed to open reserve fd" << std::endl;
+
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_addr .s_addr = INADDR_ANY;
 	serverAddress.sin_port = htons(this->_port);
@@ -148,7 +152,39 @@ void	Server::acceptNewClient()
 
 	if (newFd == -1)
 	{
-		std::cout << "accept() failed." << std::endl;
+		if (errno == EAGAIN || errno == EWOULDBLOCK)
+			return; // nothing to accept now
+
+		if (errno == EMFILE || errno == ENFILE)
+		{
+			// file descriptor table is full
+			std::cerr << "accept() failed: EMFILE/ENFILE (out of fds). "
+					<< "Closing reserve fd, accepting+closing one connection to clear backlog." << std::endl;
+
+			if (_reserveFd != -1)
+			{
+				close(_reserveFd);
+				_reserveFd = -1;
+			}
+
+			// try to accept one connection to clear it from backlog, then close it
+			int tmp = accept(_serverSocketFd, NULL, NULL);
+			if (tmp != -1)
+			{
+				close(tmp);
+			}
+
+			// reopen reserve fd
+			_reserveFd = open("/dev/null", O_RDONLY);
+			if (_reserveFd == -1)
+				std::cerr << "Warning: failed to reopen reserve fd" << std::endl;
+
+			// avoid tight loop a little
+			sleep(1);
+			return;
+		}
+
+		perror("accept");
 		return;
 	}
 	if (fcntl(newFd, F_SETFL, O_NONBLOCK) == -1)
