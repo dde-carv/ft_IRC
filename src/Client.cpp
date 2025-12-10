@@ -103,3 +103,8 @@ void Client::setIpAdd(std::string ip)
 {
 	this->_ip = ip;
 }
+
+void	Client::AddChannelInvite(std::string &channelname)
+{
+	_channelInviteList.push_back(channelname);
+}

@@ -12,6 +12,7 @@ class Client
 		bool	_operator;
 		bool	_registered;
 		bool	_logedIn;
+		std::vector<std::string> _channelInviteList;
 
 	public:
 		// default constructor
@@ -30,7 +31,6 @@ class Client
 		std::string	getNickName();
 		std::string	getUserName();
 		std::string getHostname();
-
 		bool	getOperator();
 		bool	getRegistered();
 		bool	getLogenIn();
@@ -39,9 +39,11 @@ class Client
 		void	setFd(int fd);
 		void	setNickName(std::string& nickname);
 		void	setUserName(std::string& username);
-
 		void	setOperator(bool value);
 		void	setRegistered(bool value);
 		void	setLogedin(bool value);
 		void	setIpAdd(std::string ip);
+
+		// methods
+		void	AddChannelInvite(std::string &channelname);
 };

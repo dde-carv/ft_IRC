@@ -51,9 +51,24 @@ Client*	Channel::getClient(int fd)
 
 Client*	Channel::getAdmin(int fd)
 {
-	for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+	for (std::vector<Client>::iterator it = _admins.begin(); it != _admins.end(); ++it)
 	{
 		if (it->getFd() == fd)
+			return &(*it);
+	}
+	return NULL;
+}
+
+Client*	Channel::getClientInChannel(std::string name)
+{
+	for (std::vector<Client>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+	{
+		if (it->getNickName() == name)
+			return &(*it);
+	}
+	for (std::vector<Client>::iterator it = _admins.begin(); it != _admins.end(); ++it)
+	{
+		if (it->getNickName() == name)
 			return &(*it);
 	}
 	return NULL;
@@ -107,6 +122,11 @@ bool Channel::getKey() const
 bool Channel::getTopicRestriction() const
 {
 	return _topicRestriction;
+}
+
+unsigned int Channel::getNumberOfClients() const
+{
+	return this->_clients.size() + this->_admins.size();
 }
 
 unsigned int Channel::getLimitOfClients() const

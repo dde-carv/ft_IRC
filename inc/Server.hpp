@@ -80,6 +80,7 @@ class Server
 		// send
 		void	senderr(int code, std::string clientname, int fd, std::string msg);
 		void	senderr(int code, std::string clientname, std::string channelname, int fd, std::string msg);
+		void	sendRsp(std::string msg, int fd);
 
 		// close methods
 		void	closeFds();
@@ -89,4 +90,13 @@ class Server
 
 		// parsing
 		std::vector<std::string>	splitCmd(std::string &str);
+
+		// join cmd
+		int		searchClientInChannels(std::string nick);
+		void	channelExist(std::vector<std::pair<std::string, std::string> > token, size_t i, size_t j, int fd);
+		int		splitJoin(std::vector<std::pair<std::string, std::string> > &token, std::string cmd, int fd);
+		void	join(std::string cmd, int fd);
+
+		// invite cmd
+		void	invite(std::string &cmd, int &fd);
 };

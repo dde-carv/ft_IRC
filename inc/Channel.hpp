@@ -28,7 +28,7 @@ class Channel
 
 	public:
 
-		//*CONSTRUCTORS AND DESTRUCTORS
+		//*CONSTRUCTORS AND DESTRUCTOR
 		Channel();
 		Channel(const Channel &og);
 		Channel&			operator=(const Channel & og);
@@ -37,6 +37,7 @@ class Channel
 		//*GETTERS
 		Client*				getClient(int fd);
 		Client*				getAdmin(int fd);
+		Client*				getClientInChannel(std::string name);
 		std::string 		getName() const;
 		std::string			getChannelCreation() const;
 		std::string			getPassword() const;
@@ -46,7 +47,8 @@ class Channel
 		std::vector<Client>	getAdminList() const;
 		bool				getInviteOnly() const;
 		bool				getKey() const;
-		bool				getTopicRestriction()const;
+		bool				getTopicRestriction() const;
+		unsigned int		getNumberOfClients() const;
 		unsigned int		getLimitOfClients() const;
 
 		//*SETTERS

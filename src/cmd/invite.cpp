@@ -12,16 +12,12 @@
 //* ERR_CHANNELISFULL		(471)
 //* RPL_INVITING			(341)
 
-//!! ADD "invite" TO SERVER CLASS (Server::)
-//!! ADD "splitCMD", "senderr", "getClient", "getChannel", "getClientNick" TO SERVER CLASS
-//!! ADD "getNick" TO CLIENT CLASS
-
-void	invite(std::string &cmd, int &fd)
+void	Server::invite(std::string &cmd, int &fd)
 {
 	std::vector<std::string> sCmd = splitCmd(cmd);
 	if (sCmd.size() < 3) //? ERR_NEEDMOREPARAMS (461) if there are not enough parameters
 	{
-		senderr(461, getClient(fd)->getNick(), fd, ": Not enough parameters!\r\n");
+		senderr(461, getClientFd(fd)->getNickName(), fd, ": Not enough parameters!\r\n");
 		return ;
 	}
 	std::string chanName = sCmd[2].substr(1); //? The substr start position is 1 so it skips the '#' character
@@ -37,7 +33,7 @@ void	invite(std::string &cmd, int &fd)
 	}
 	if (getChannel(chanName)->getClientInChannel(sCmd[1])) //? ERR_USERONCHANNEL (443) if the given nickname is already on the channel
 	{
-		senderr(443, getClient(fd)->getNick(), chanName, fd, ": The client is already in the channel!\r\n");
+		senderr(443, getClientFd(fd)->getNickName(), chanName, fd, ": The client is already in the channel!\r\n");
 		return ;
 	}
 	Client *clt = getClientNick(sCmd[1]);
@@ -48,18 +44,18 @@ void	invite(std::string &cmd, int &fd)
 	}
 	if (getChannel(chanName)->getInviteOnly() && !(getChannel(chanName)->getAdmin(fd))) //? ERR_CHANOPRIVSNEEDED (482) if the sender is not an operator
 	{
-		senderr(482, getChannel(chanName)->getClient(fd)->getNick(), sCmd[1], fd, ": You are not a channel operator!\r\n");
+		senderr(482, getChannel(chanName)->getClient(fd)->getNickName(), sCmd[1], fd, ": You are not a channel operator!\r\n");
 		return ;
 	}
-	if (getChannel(chanName)->getLimit() && getChannel(chanName)->getClientsNumber() >= getChannel(chanName)->getLimit()) //? ERR_CHANNELISFULL (471) if channel has limit and is full
+	if (getChannel(chanName)->getLimitOfClients() && getChannel(chanName)->getNumberOfClients() >= getChannel(chanName)->getLimitOfClients()) //? ERR_CHANNELISFULL (471) if channel has limit and is full
 	{
-		senderr(471, getChannel(chanName)->getClient(fd)->getNick(), chanName, fd, ": Can not invite to channel. Channel is full!");
+		senderr(471, getChannel(chanName)->getClient(fd)->getNickName(), chanName, fd, ": Can not invite to channel. Channel is full!");
 		return ;
 	}
 	//? RPL_INVITING (341) if the invite was successfully sent
 	clt->AddChannelInvite(chanName);
-	std::string rpl1 = (": 301 " + getClient(fd)->getNick() + " " + clt->getNick() + " " + sCmd[2] + "\r\n");
-	sendResp(rpl1, fd);
-	std::string rpl2 = (":" + clt->getHostName() + " INVITE " + clt->getNick() + " " + sCmd[2] + "\r\n");
-	sendResp(rpl2, clt->getFd());
+	std::string rpl1 = (": 301 " + getClientFd(fd)->getNickName() + " " + clt->getNickName() + " " + sCmd[2] + "\r\n");
+	sendRsp(rpl1, fd);
+	std::string rpl2 = (":" + clt->getHostname() + " INVITE " + clt->getNickName() + " " + sCmd[2] + "\r\n");
+	sendRsp(rpl2, clt->getFd());
 }

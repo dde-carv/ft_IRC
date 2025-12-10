@@ -271,7 +271,7 @@ void	Server::removeChannel(std::string name)
 
 
 // send
-void	senderr(int code, std::string clientname, int fd, std::string msg)
+void	Server::senderr(int code, std::string clientname, int fd, std::string msg)
 {
 	std::stringstream	ss;
 	ss << ":localhost " << code << " " << clientname << msg;
@@ -280,12 +280,18 @@ void	senderr(int code, std::string clientname, int fd, std::string msg)
 		std::cout << "send() failed" << std::endl;
 }
 
-void	senderr(int code, std::string clientname, std::string channelname, int fd, std::string msg)
+void	Server::senderr(int code, std::string clientname, std::string channelname, int fd, std::string msg)
 {
 	std::stringstream	ss;
 	ss << ":localhost " << code << " " << clientname << " " << channelname << msg;
 	std::string resp = ss.str();
 	if (send(fd, resp.c_str(), resp.size(), 0) == -1)
+		std::cout << "send() failed" << std::endl;
+}
+
+void	Server::sendRsp(std::string msg, int fd)
+{
+	if (send(fd, msg.c_str(), msg.size(), 0) == -1)
 		std::cout << "send() failed" << std::endl;
 }
 
@@ -316,7 +322,7 @@ void Server::signalHandler(int signum)
 
 // parsing methods
 
-std::vector<std::string> splitCmd(std::string &str)
+std::vector<std::string> Server::splitCmd(std::string &str)
 {
 	std::vector<std::string> vec;
 	std::istringstream stm(str);
