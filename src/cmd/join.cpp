@@ -7,6 +7,20 @@
 //* ERR_NOSUCHCHANNEL		(403)
 //* ERR_TOOMANYTARGETS		(407)
 //* ERR_TOOMANYCHANNELS		(405)
+//* ERR_BADCHANNELKEY		(475)
+//* ERR_INVITEONLYCHAN		(473)
+//* ERR_CHANNELISFULL		(471)
+
+bool	isInvited(Client *clt, std::string channelName, int flag)
+{
+	if (clt->getInviteToChannel(channelName))
+	{
+		if (flag == 1)
+			clt->removeChannelInvite(channelName);
+		return true;
+	}
+	return false;
+}
 
 int		Server::searchClientInChannels(std::string nick)
 {
@@ -19,7 +33,22 @@ int		Server::searchClientInChannels(std::string nick)
 	return count;
 }
 
-// channelNotExist
+void	Server::channelNotExist(std::vector<std::pair<std::string, std::string> > token, size_t i, int fd)
+{
+	if (searchClientInChannels(getClientFd(fd)->getNickName()) >= 10)
+	{
+		senderr(405, getClientFd(fd)->getNickName(), fd, ": You have joined too many channels!\r\n");
+		return ;
+	}
+	Channel newChannel;
+	newChannel.setName(token[i].first);
+	newChannel.addAdmin(*getClientFd(fd));
+	newChannel.setChannelCreationTime();
+	this->_channels.push_back(newChannel);
+	sendRsp(RPL_JOINMSG(getClientFd(fd)->getHostname(), getClientFd(fd)->getIpAddress(), newChannel.getName()) + \
+			RPL_NAMREPLY(getClientFd(fd)->getNickName(), newChannel.getName(), newChannel.getClientList()) + \
+			RPL_ENDOFNAMES(getClientFd(fd)->getNickName(), newChannel.getName()), fd);
+}
 
 void	Server::channelExist(std::vector<std::pair<std::string, std::string> > token, size_t i, size_t j, int fd)
 {
@@ -31,16 +60,45 @@ void	Server::channelExist(std::vector<std::pair<std::string, std::string> > toke
 		return ;
 	}
 	if (!this->_channels[j].getPassword().empty() && this->_channels[j].getPassword() != token[i].second)
-	{}
+	{
+		if (!isInvited(getClientFd(fd), token[i].first, 0))
+		{
+			senderr(475, getClientFd(fd)->getNickName(), "#" + token[i].first, fd, ": Cannot join the channel - bad password!\r\n");
+			return ;
+		}
+	}
+	if (this->_channels[j].getInviteOnly())
+	{
+		if (!isInvited(getClientFd(fd), getClientFd(fd)->getNickName(), 1))
+		{
+			senderr(473, getClientFd(fd)->getNickName(), "#" + token[i].first, fd, ": Cannot join the channel - invite only!\r\n");
+			return ;
+		}
+	}
+	if (this->_channels[j].getLimitOfClients() && this->_channels[j].getNumberOfClients() >= this->_channels[j].getLimitOfClients())
+	{
+		senderr(471, getClientFd(fd)->getNickName(), "#" + token[i].first, fd, ": Cannot join the channel - is full!\r\n");
+		return ;
+	}
+	Client *clt = getClientFd(fd);
+	this->_channels[j].addClient(*clt);
+	if (_channels[j].getChannelTopic().empty())
+		sendRsp(RPL_JOINMSG(getClientFd(fd)->getHostname(), getClientFd(fd)->getIpAddress(), token[i].first) + \
+			RPL_NAMREPLY(getClientFd(fd)->getNickName(), _channels[j].getName(), _channels[j].getClientList()) + \
+			RPL_ENDOFNAMES(getClientFd(fd)->getNickName(), _channels[j].getName()), fd);
+	else
+		sendRsp(RPL_JOINMSG(getClientFd(fd)->getHostname(), getClientFd(fd)->getIpAddress(), token[i].first) + \
+			RPL_TOPICIS(getClientFd(fd)->getNickName(), _channels[j].getName(), _channels[j].getChannelTopic()) + \
+			RPL_NAMREPLY(getClientFd(fd)->getNickName(), _channels[j].getName(), _channels[j].getClientList()) + \
+			RPL_ENDOFNAMES(getClientFd(fd)->getNickName(), _channels[j].getName()), fd);
+	_channels[j].sendToEveryoneElse(RPL_JOINMSG(getClientFd(fd)->getHostname(), getClientFd(fd)->getIpAddress(), token[i].first), fd);
 }
 
-int		Server::splitJoin(std::vector<std::pair<std::string, std::string> > &token, std::string cmd, int fd)
+int		Server::splitJoin(std::vector<std::pair<std::string, std::string> > &token, std::vector<std::string> &cmd, int fd)
 {
-	std::vector<std::string>	tmp;
+	std::vector<std::string>	tmp = cmd;
 	std::string					chStr, passStr, buff;
-	std::istringstream			iss(cmd);
-	while(iss >> cmd)
-		tmp.push_back(cmd);
+
 	if (tmp.size() < 2)
 	{
 		token.clear();
@@ -100,7 +158,7 @@ int		Server::splitJoin(std::vector<std::pair<std::string, std::string> > &token,
 	return 1;
 }
 
-void	Server::join(std::string cmd, int fd)
+void	Server::join(std::vector<std::string> &cmd, int fd)
 {
 	std::vector<std::pair<std::string, std::string> > token;
 	if (!splitJoin(token, cmd, fd))

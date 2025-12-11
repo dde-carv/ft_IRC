@@ -142,9 +142,12 @@ void Channel::setName(std::string name)
 	_channelName = name;
 }
 
-void Channel::setChannelCreation(std::string date)
+void Channel::setChannelCreationTime()
 {
-	_channelCreation = date;
+	std::time_t _time = std::time(NULL);
+	std::ostringstream oss;
+	oss << _time;
+	this->_channelCreation = std::string(oss.str());
 }
 
 void Channel::setPassword(std::string pass)

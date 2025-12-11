@@ -31,9 +31,11 @@ class Client
 		std::string	getNickName();
 		std::string	getUserName();
 		std::string getHostname();
+		std::string getIpAddress();
 		bool	getOperator();
 		bool	getRegistered();
 		bool	getLogenIn();
+		bool	getInviteToChannel(std::string &channelName);
 
 		// setters
 		void	setFd(int fd);
@@ -46,4 +48,5 @@ class Client
 
 		// methods
 		void	AddChannelInvite(std::string &channelname);
+		void	removeChannelInvite(std::string &channelName);
 };

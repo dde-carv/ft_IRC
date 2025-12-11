@@ -53,7 +53,7 @@ class Channel
 
 		//*SETTERS
 		void				setName(std::string name);
-		void				setChannelCreation(std::string date);
+		void				setChannelCreationTime();
 		void				setPassword(std::string pass);
 		void				setChannelTopic(std::string topic);
 		void				setTopicCreation(std::string date);

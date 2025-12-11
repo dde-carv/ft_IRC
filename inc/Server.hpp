@@ -21,6 +21,7 @@
 #include <exception>
 #include "Client.hpp"
 #include "Channel.hpp"
+#include "Replies.hpp"
 
 class Client;
 class Channel;
@@ -91,12 +92,16 @@ class Server
 		// parsing
 		std::vector<std::string>	splitCmd(std::string &str);
 
+		// invite cmd
+		void	invite(std::vector<std::string> &cmd, int &fd);
+
 		// join cmd
 		int		searchClientInChannels(std::string nick);
+		void	channelNotExist(std::vector<std::pair<std::string, std::string> > token, size_t i, int fd);
 		void	channelExist(std::vector<std::pair<std::string, std::string> > token, size_t i, size_t j, int fd);
-		int		splitJoin(std::vector<std::pair<std::string, std::string> > &token, std::string cmd, int fd);
-		void	join(std::string cmd, int fd);
+		int		splitJoin(std::vector<std::pair<std::string, std::string> > &token, std::vector<std::string> &cmd, int fd);
+		void	join(std::vector<std::string> &cmd, int fd);
 
-		// invite cmd
-		void	invite(std::string &cmd, int &fd);
+		// kick cmd
+		void	kick(std::vector<std::string> &cmd, int &fd);
 };

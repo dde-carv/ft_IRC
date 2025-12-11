@@ -52,6 +52,11 @@ std::string	Client::getHostname()
 	return hostname;
 }
 
+std::string	Client::getIpAddress()
+{
+	return this->_ip;
+}
+
 bool	Client::getOperator()
 {
 	return this->_operator;
@@ -65,6 +70,16 @@ bool	Client::getRegistered()
 bool	Client::getLogenIn()
 {
 	return this->_logedIn;
+}
+
+bool	Client::getInviteToChannel(std::string &channelName)
+{
+	for (size_t i = 0; i < this->_channelInviteList.size(); i++)
+	{
+		if (this->_channelInviteList[i] == channelName)
+			return true;
+	}
+	return false;
 }
 
 // setters
@@ -107,4 +122,16 @@ void Client::setIpAdd(std::string ip)
 void	Client::AddChannelInvite(std::string &channelname)
 {
 	_channelInviteList.push_back(channelname);
+}
+
+void	Client::removeChannelInvite(std::string &channelName)
+{
+	for (size_t i = 0; i < this->_channelInviteList.size(); i++)
+	{
+		if (this->_channelInviteList[i] == channelName)
+		{
+			this->_channelInviteList.erase(this->_channelInviteList.begin() + i);
+			return ;
+		}
+	}
 }
