@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server() : _reserveFd(-1), _serverSocketFd(-1), _signal(false)
+Server::Server() : _maxFd(2), _reserveFd(-1), _serverSocketFd(-1), _signal(false)
 {}
 
 Server::Server(Server const &og)
@@ -97,18 +97,18 @@ void	Server::serverInit()
 	std::cout << "Waiting to accept a connection...\n";
 	while (Server::_signal == false)
 	{
-		if((poll(&_clientSocketFds[0],_clientSocketFds.size(), -1) == -1) && Server::_signal == false)
-			throw(std::runtime_error("poll() failed"));
-		for (size_t i = 0; i < _clientSocketFds.size(); i++)
-		{
-			if (_clientSocketFds[i].revents & POLLIN)
+			if((poll(&_clientSocketFds[0],_clientSocketFds.size(), -1) == -1) && Server::_signal == false)
+				throw(std::runtime_error("poll() failed"));
+			for (size_t i = 0; i < _clientSocketFds.size(); i++)
 			{
-				if (_clientSocketFds[i].fd == _serverSocketFd)
-					this->acceptNewClient();
-				else
-					this->receiveNewData(_clientSocketFds[i].fd);
+				if (_clientSocketFds[i].revents & POLLIN)
+				{
+						if (_clientSocketFds[i].fd == _serverSocketFd && _maxFd < 1020)
+							this->acceptNewClient();
+						else
+							this->receiveNewData(_clientSocketFds[i].fd);
+				}
 			}
-		}
 	}
 	closeFds();
 }
@@ -152,39 +152,7 @@ void	Server::acceptNewClient()
 
 	if (newFd == -1)
 	{
-		if (errno == EAGAIN || errno == EWOULDBLOCK)
-			return; // nothing to accept now
-
-		if (errno == EMFILE || errno == ENFILE)
-		{
-			// file descriptor table is full
-			std::cerr << "accept() failed: EMFILE/ENFILE (out of fds). "
-					<< "Closing reserve fd, accepting+closing one connection to clear backlog." << std::endl;
-
-			if (_reserveFd != -1)
-			{
-				close(_reserveFd);
-				_reserveFd = -1;
-			}
-
-			// try to accept one connection to clear it from backlog, then close it
-			int tmp = accept(_serverSocketFd, NULL, NULL);
-			if (tmp != -1)
-			{
-				close(tmp);
-			}
-
-			// reopen reserve fd
-			_reserveFd = open("/dev/null", O_RDONLY);
-			if (_reserveFd == -1)
-				std::cerr << "Warning: failed to reopen reserve fd" << std::endl;
-
-			// avoid tight loop a little
-			sleep(1);
-			return;
-		}
-
-		perror("accept");
+		std::cout << "accept() failed." << std::endl;
 		return;
 	}
 	if (fcntl(newFd, F_SETFL, O_NONBLOCK) == -1)
@@ -192,8 +160,10 @@ void	Server::acceptNewClient()
 		std::cout << "ftcnl() nonblock failed." << std::endl;
 		return;
 	}
+	this->_maxFd++;
 	std::cout << "New client: " << newFd << std::endl;
-
+	if (this->_maxFd > 1019)
+		std::cout << "Max clients reached" << std::endl;
 
 	Client client;
 	memset(&clientAddress, 0, sizeof(clientAddress));
@@ -213,13 +183,18 @@ void	Server::receiveNewData(int fd)
 	char buffer[1024];
 	bzero(buffer, sizeof(buffer));
 	ssize_t  bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
-	std::cout << buffer << std::endl;
-	if (bytes == -1)
-		std::cout << "recv() failed." << std::endl;
+	if (_maxFd < 1019)
+	{
+		std::cout << buffer << std::endl;
+		if (bytes == -1)
+			std::cout << "recv() failed." << std::endl;
+		else if (bytes == 0)
+			endConnection(fd);
+		// else
+		// 	handleMessage(fd, buffer);
+	}
 	else if (bytes == 0)
-		endConnection(fd);
-	// else
-	// 	handleMessage(fd, buffer);
+			endConnection(fd);
 }
 
 void	Server::endConnection(int fd)
@@ -232,13 +207,14 @@ void	Server::endConnection(int fd)
 			removeClient(fd);
 			close(fd);
 			std::cout << "Connection closed: " << fd << std::endl;
+			_maxFd--;
 			break ;
 		}
 	}
 }
 
 // void	handleMessage(int fd, char *buffer)
-// {s
+// {
 
 // }
 

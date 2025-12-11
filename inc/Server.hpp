@@ -28,6 +28,7 @@ class Channel;
 class Server
 {
 	private:
+		int _maxFd;
 		int	_port;
 		int	_reserveFd;
 		int	_serverSocketFd;
