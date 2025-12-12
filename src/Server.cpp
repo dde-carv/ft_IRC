@@ -103,7 +103,7 @@ void	Server::serverInit()
 			{
 				if (_clientSocketFds[i].revents & POLLIN)
 				{
-						if (_clientSocketFds[i].fd == _serverSocketFd && _maxFd < 1020)
+						if (_clientSocketFds[i].fd == _serverSocketFd && _maxFd < 1021)
 							this->acceptNewClient();
 						else
 							this->receiveNewData(_clientSocketFds[i].fd);
@@ -162,7 +162,7 @@ void	Server::acceptNewClient()
 	}
 	this->_maxFd++;
 	std::cout << "New client: " << newFd << std::endl;
-	if (this->_maxFd > 1019)
+	if (this->_maxFd > 1020)
 		std::cout << "Max clients reached" << std::endl;
 
 	Client client;
@@ -183,7 +183,7 @@ void	Server::receiveNewData(int fd)
 	char buffer[1024];
 	bzero(buffer, sizeof(buffer));
 	ssize_t  bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
-	if (_maxFd < 1019)
+	if (_maxFd < 1020)
 	{
 		std::cout << buffer << std::endl;
 		if (bytes == -1)
