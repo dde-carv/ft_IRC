@@ -30,3 +30,7 @@
 # define ERR_ERRONEUSNICK(nickname) (": 432 " + nickname + " :Erroneus nickname" + CRLF)
 # define ERR_NOTREGISTERED(nickname) (": 451 " + nickname + " :You have not registered!" + CRLF)
 # define ERR_CMDNOTFOUND(nickname, command) (": 421 " + nickname + " " + command + " :Unknown command" + CRLF)
+# define ERR_NOTONCHANNEL(nickname, channelname) (": 442 " + nickname + " " + channelname + " :You're not on that channel" + CRLF)
+# define ERR_TOOMANYTARGETS(nickname) (": 407 " + nickname + " :Too many recipients" + CRLF)
+# define ERR_NORECIPIENT(nickname) (": 411 " + nickname " :No recipient given (PRIVMSG)" + CRLF)
+# define ERR_NOTEXTTOSEND(nickname) (": 412 " + nickname " :No text to send" + CRLF)
