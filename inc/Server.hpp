@@ -94,6 +94,9 @@ class Server
 		// parsing
 		std::vector<std::string>	splitCmd(std::string &str);
 
+		// user cmd
+		void	user(std::vector<std::string> &cmd, int fd);
+
 		// invite cmd
 		void	invite(std::vector<std::string> &cmd, int &fd);
 

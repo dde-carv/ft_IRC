@@ -34,7 +34,7 @@ class Client
 		std::string getIpAddress();
 		bool	getOperator();
 		bool	getRegistered();
-		bool	getLogenIn();
+		bool	getLogedIn();
 		bool	getInviteToChannel(std::string &channelName);
 
 		// setters

@@ -67,7 +67,7 @@ bool	Client::getRegistered()
 	return this->_registered;
 }
 
-bool	Client::getLogenIn()
+bool	Client::getLogedIn()
 {
 	return this->_logedIn;
 }
