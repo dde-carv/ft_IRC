@@ -106,4 +106,10 @@ class Server
 
 		// kick cmd
 		void	kick(std::vector<std::string> &cmd, int &fd);
+
+		// mode cmd
+		std::string	limitMode(std::vector<std::string> tokens, Channel *channel, size_t &pos, char opera, int fd, std::string &args, std::string chain);
+		std::string	operatorPrivilegeMode(std::vector<std::string> tokens, Channel *channel, size_t &pos, char opera, int fd, std::string &args, std::string chain);
+		std::string	passwordMode(std::vector<std::string> tokens, Channel *channel, size_t &pos, char opera, int fd, std::string &args, std::string chain);
+		void		mode(std::vector<std::string> &cmd, int fd);
 };

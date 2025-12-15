@@ -99,6 +99,19 @@ std::string Channel::getTopicCreation() const
 	return _topicCreation;
 }
 
+std::string Channel::getModes()
+{
+	std::string mode;
+	for (size_t i = 0; i < _modes.size(); i++)
+	{
+		if (_modes[i].first != 'o' && _modes[i].second)
+			mode.push_back(_modes[i].first);
+	}
+	if (!mode.empty())
+		mode.insert(mode.begin(), '+');
+	return mode;
+}
+
 std::vector<Client> Channel::getClientList() const
 {
 	return _clients;
@@ -122,6 +135,11 @@ bool Channel::getKey() const
 bool Channel::getTopicRestriction() const
 {
 	return _topicRestriction;
+}
+
+bool Channel::getModeAtIndex(size_t i)
+{
+	return _modes[i].second;
 }
 
 unsigned int Channel::getNumberOfClients() const
@@ -195,6 +213,10 @@ void Channel::setLimitOfClients(unsigned int cLimit)
 	_limitOfClients = cLimit;
 }
 
+void Channel::setModeAtIndex(size_t i, bool mode)
+{
+	_modes[i].second = mode;
+}
 
 //*METHODS
 

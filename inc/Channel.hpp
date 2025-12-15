@@ -43,11 +43,13 @@ class Channel
 		std::string			getPassword() const;
 		std::string			getChannelTopic() const;
 		std::string			getTopicCreation() const;
+		std::string			getModes();
 		std::vector<Client>	getClientList() const;
 		std::vector<Client>	getAdminList() const;
 		bool				getInviteOnly() const;
 		bool				getKey() const;
 		bool				getTopicRestriction() const;
+		bool				getModeAtIndex(size_t i);
 		unsigned int		getNumberOfClients() const;
 		unsigned int		getLimitOfClients() const;
 
@@ -63,6 +65,7 @@ class Channel
 		void				setKey(bool key);
 		void				setTopicRestriction(bool tRestriction);
 		void				setLimitOfClients(unsigned int cLimit);
+		void				setModeAtIndex(size_t i, bool mode);
 
 		//*METHODS
 		void				addClient(Client newClient);

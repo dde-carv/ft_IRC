@@ -23,6 +23,7 @@
 # define ERR_CHANNELNOTFOUND(nickname, channelname) (": 403 " + nickname + " " + channelname + " :No such channel" + CRLF)
 # define ERR_NOTOPERATOR(channelname) (": 482 #" + channelname + " :You're not a channel operator" + CRLF)
 # define ERR_NOSUCHNICK(channelname, name) (": 401 #" + channelname + " " + name + " :No such nick/channel" + CRLF )
+# define ERR_USERNOTINCHANNEL(channelname, name) (": 441 #" + channelname + " " + name + " :No such user in channel" + CRLF)
 # define ERR_INCORPASS(nickname) (": 464 " + nickname + " :Password incorrect !" + CRLF )
 # define ERR_ALREADYREGISTERED(nickname) (": 462 " + nickname + " :You may not reregister !" + CRLF )
 # define ERR_NONICKNAME(nickname) (": 431 " + nickname + " :No nickname given" + CRLF )
