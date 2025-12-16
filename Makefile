@@ -2,6 +2,7 @@ NAME		=	ircserv
 
 INC_DIR		=	inc/
 SRC_DIR		=	src/
+CMD_DIR		=	src/cmd/
 OBJ_DIR		=	obj/
 
 CXX			=	c++ -Wall -Werror -std=c++98
@@ -11,7 +12,19 @@ SRCS			=	$(SRC_DIR)main.cpp \
 					$(SRC_DIR)Server.cpp \
 					$(SRC_DIR)Client.cpp \
 					$(SRC_DIR)Channel.cpp \
-					$(SRC_DIR)aux.cpp
+					$(SRC_DIR)aux.cpp \
+					$(CMD_DIR)invite.cpp \
+					$(CMD_DIR)join.cpp \
+					$(CMD_DIR)kick.cpp \
+					$(CMD_DIR)mode.cpp \
+					$(CMD_DIR)nick.cpp \
+					$(CMD_DIR)part.cpp \
+					$(CMD_DIR)pass.cpp \
+					$(CMD_DIR)privmsg.cpp \
+					$(CMD_DIR)quit.cpp \
+					$(CMD_DIR)topic.cpp \
+					$(CMD_DIR)user.cpp
+
 
 OBJS			=	$(patsubst $(SRC_DIR)%.cpp,$(OBJ_DIR)%.o,$(SRCS))
 

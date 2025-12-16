@@ -186,7 +186,7 @@ void	Server::receiveNewData(int fd)
 	Client *cli = getClientFd(fd);
 	if (_maxFd < 1020)
 	{
-		std::cout << buffer << std::endl;
+		std::cout << buffer;
 		if (bytes == -1)
 			std::cout << "recv() failed." << std::endl;
 		else if (bytes == 0)
@@ -196,8 +196,8 @@ void	Server::receiveNewData(int fd)
 			cli->setBuffer(buffer);
 			if(cli->getBuffer().find_first_of("\r\n") == std::string::npos)
 				return;
-			// parseMessage(fd, buffer);
-			std::cout << cli->getBuffer();
+			std::string message = buffer;
+			parseMessage(message, fd);
 			if(getClientFd(fd))
 				getClientFd(fd)->clearBuffer();
 		}
@@ -349,4 +349,50 @@ std::vector<std::string> Server::splitCmd(std::string &str)
 		token.clear();
 	}
 	return vec;
+}
+
+bool	Server::registered(int &fd)
+{
+	if (!this->getClientFd(fd) || this->getClientFd(fd)->getNickName().empty() || this->getClientFd(fd)->getUserName().empty())
+		return false;
+	return true;
+}
+
+void	Server::parseMessage(std::string &cmd, int &fd)
+{
+	// std::cout << cmd << std::endl;
+	std::vector<std::string> tokens = splitCmd(cmd);
+
+	if (tokens.size())
+	{
+		if (tokens[0] == "NICK" || tokens[0] == "nick")
+			nick(tokens, fd);
+		else if (tokens[0] == "PASS" || tokens[0] == "pass")
+			pass(tokens, fd);
+		else if (tokens[0] == "QUIT" || tokens[0] == "quit")
+			quit(tokens, fd);
+		else if (tokens[0] == "USER" || tokens[0] == "user")
+			user(tokens, fd);
+		else if (registered(fd))
+		{
+			if (tokens[0] == "INVITE" || tokens[0] == "invite")
+				invite(tokens, fd);
+			else if (tokens[0] == "JOIN" || tokens[0] == "join")
+				join(tokens, fd);
+			else if (tokens[0] == "KICK" || tokens[0] == "kick")
+				kick(tokens, fd);
+			else if (tokens[0] == "MODE" || tokens[0] == "mode")
+				mode(tokens, fd);
+			else if (tokens[0] == "PART" || tokens[0] == "part")
+				part(tokens, fd);
+			else if (tokens[0] == "PRIVMSG" || tokens[0] == "privmsg")
+				privmsg(tokens, fd);
+			else if (tokens[0] == "TOPIC" || tokens[0] == "topic")
+				topic(tokens, fd);
+			else
+				sendRsp(ERR_CMDNOTFOUND(this->getClientFd(fd)->getNickName(), tokens[0]), fd);
+		}
+		else
+			sendRsp(ERR_NOTREGISTERED(std::string("*")), fd);
+	}
 }

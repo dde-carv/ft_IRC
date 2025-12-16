@@ -51,7 +51,7 @@ void	Server::part(std::vector<std::string> &tokens, int fd)
 	for (size_t i = 0; i < channPart.size(); i++)
 	{
 		bool exist = false;
-		for (size_t j; j < this->_channels.size(); j++)
+		for (size_t j = 0; j < this->_channels.size(); j++)
 		{
 			if (this->_channels[j].getName() == channPart[i])
 			{

@@ -57,6 +57,7 @@ void	Server::nick(std::vector<std::string> &cmd, int fd)
 	}
 	else
 	{
+		//std::cout << "nickname: " << cmd[1] << std::endl;
 		if (cli && cli->getRegistered())
 		{
 			std::string oldNick = cli->getNickName();

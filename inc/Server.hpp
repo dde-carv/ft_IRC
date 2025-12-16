@@ -94,6 +94,8 @@ class Server
 
 		// parsing
 		std::vector<std::string>	splitCmd(std::string &str);
+		bool		registered(int &fd);
+		void		parseMessage(std::string &cmd, int &fd);
 
 		// pass cmd
 		void		pass(std::vector<std::string> &cmd, int fd);
