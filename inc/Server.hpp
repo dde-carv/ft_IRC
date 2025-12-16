@@ -94,6 +94,14 @@ class Server
 		// parsing
 		std::vector<std::string>	splitCmd(std::string &str);
 
+		// pass cmd
+		void	pass(std::string password, int fd);
+
+		// nick cmd
+		bool	validNick(std::string& nickName);
+		bool	nickInUse(std::string& nickName);
+		void	nick(std::string nickName, int fd);
+
 		// user cmd
 		void	user(std::vector<std::string> &cmd, int fd);
 
