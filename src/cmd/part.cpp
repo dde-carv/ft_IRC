@@ -47,7 +47,7 @@ std::vector<std::string> &channPart, std::string &reason, int fd)
 			channPart[i].erase(channPart[i].begin());
 		else
 		{
-			sendResponse(ERR_CHANNELNOTFOUND(this->getClientFd(fd)->getNickName()), channPart[i]);
+			sendResponse(ERR_CHANNELNOTFOUND(this->getClientFd(fd)->getNickName(), channPart[i]), fd);
 			channPart.erase(channPart.begin() + i--);
 		}
 	}
@@ -63,36 +63,36 @@ void	Server::part(std::vector<std::string> &tokens, int fd)
 	tokens.erase(tokens.begin());
 	if (!splitPart(tokens, channPart, reason, fd))
 		return (sendResponse(ERR_NOTENOUGHPARAM(this->getClientFd(fd)->getNickName()), fd));
-	for (size_t i = 0; i < chanPart.size(); i++)
+	for (size_t i = 0; i < channPart.size(); i++)
 	{
 		bool exist = false;
 		for (size_t j; j < this->channels.size(); j++)
 		{
-			if (this->channels[j].getName() == chanPart[i])
+			if (this->channels[j].getName() == channPart[i])
 			{
 				exist = true;
 				if (!this->channels[j].getClient(fd) && !this->channels[j].getAdmin(fd))
 				{
-					sendResponse(EERR_NOTONCHANNEL(this->getClient(fd)->getNickName(), \
+					sendResponse(ERR_NOTONCHANNEL(this->getClientFd(fd)->getNickName(), \
 					this->channels[j].getName()), fd);
 					continue ;
 				}
-				std::string msg = ":" + this->getClient(fd)->getNickName() + "!~" + \
-				this->getClient(fd)->getUserName() + "@localhost PART #" + chanPart[i];
+				std::string msg = ":" + this->getClientFd(fd)->getNickName() + "!~" + \
+				this->getClientFd(fd)->getUserName() + "@localhost PART #" + channPart[i];
 				if (!reason.empty())
-					msg += " :" + reason + "\r\n";
+					msg += " :" + reason + CRLF;
 				else
-					msg += "\r\n";
+					msg += CRLF;
 				this->channels[j].sendToAll(msg);
 				if(this->channels[j].getAdmin(fd))
 					this->channels[j].removeAdmin(fd);
 				else
 					this->channels[j].removeClient(fd);
 				if (this->channels[j].getNumberOfClients == 0)
-					this->channels[j].erase(this->channels[j].begin() + j);
+					this->channels.erase(this->channels.begin() + j);
 			}
 		}
 		if (!exist)
-			sendResponse(ERR_CHANNELNOTFOUND(this->getClient(fd)->getNickName(), chanPart[i]), fd);
+			sendResponse(ERR_CHANNELNOTFOUND(this->getClientFd(fd)->getNickName(), channPart[i]), fd);
 	}
 }

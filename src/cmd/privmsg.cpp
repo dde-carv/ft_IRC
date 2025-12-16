@@ -43,7 +43,7 @@ void	Server::privmsg(std::vector<std::string> &tokens, int fd)
 		return (sendResponse(ERR_NOTEXTTOSEND(getClientFd(fd)->getNickName()), fd));
 	if (recipients.size() + channRecipients.size() > 10)
 		return (sendResponse(ERR_TOOMANYTARGETS(getClientFd(fd)->getNickName()), fd));
-	std::string msgToSend = msg + "\r\n";
+	std::string msgToSend = msg + CRLF;
 	for (size_t i = 0; i < recipients.size(); i++)
 	{
 		if (this->getClientNick(recipients[i]))
@@ -61,6 +61,6 @@ void	Server::privmsg(std::vector<std::string> &tokens, int fd)
 			this->getChannel(channRecipients[i])->sendToAll(":" + this->getClient(fd)->getNickName() + "!~" + \
 			this->getClient(fd)->getUserName() + "@localhost PRIVMSG #" + channRecipients[i] + " :" + msgToSend, fd);
 		else
-			sendResponse(ERR_NOSUCHNICK(channRecipients[i]), fd);
+			sendResponse(ERR_NOSUCHNICK(channRecipients[i], this->getClient(fd)->getNickName()), fd);
 	}
 }

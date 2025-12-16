@@ -13,6 +13,9 @@
 # define RPL_NAMREPLY(nickname, channelname, clientslist) (": 353 " + nickname + " @ #" + channelname + " :" + clientslist + CRLF)
 # define RPL_ENDOFNAMES(nickname, channelname) (": 366 " + nickname + " #" + channelname + " :END of /NAMES list" + CRLF)
 # define RPL_TOPICIS(nickname, channelname, topic) (": 332 " + nickname + " #" +channelname + " :" + topic + CRLF)
+# define RPL_NOTOPIC(nickname, channelname) (": 331 " + nickname + " #" + channelname + " :No topic is set" + CRLF)
+# define RPL_TOPICWHOTIME(nickname, channelname, topicCreation) (": 333 " + nickname + " #" + channelname + " " topicCreation + CRLF)
+
 
 //! ERRORS
 # define ERR_NEEDMODEPARM(channelname, mode) (": 696 #" + channelname + " * You must specify a parameter for the key mode. " + mode + CRLF)
@@ -30,7 +33,7 @@
 # define ERR_ERRONEUSNICK(nickname) (": 432 " + nickname + " :Erroneus nickname" + CRLF)
 # define ERR_NOTREGISTERED(nickname) (": 451 " + nickname + " :You have not registered!" + CRLF)
 # define ERR_CMDNOTFOUND(nickname, command) (": 421 " + nickname + " " + command + " :Unknown command" + CRLF)
-# define ERR_NOTONCHANNEL(nickname, channelname) (": 442 " + nickname + " " + channelname + " :You're not on that channel" + CRLF)
+# define ERR_NOTONCHANNEL(nickname, channelname) (": 442 " + nickname + " #" + channelname + " :You're not on that channel" + CRLF)
 # define ERR_TOOMANYTARGETS(nickname) (": 407 " + nickname + " :Too many recipients" + CRLF)
 # define ERR_NORECIPIENT(nickname) (": 411 " + nickname " :No recipient given (PRIVMSG)" + CRLF)
 # define ERR_NOTEXTTOSEND(nickname) (": 412 " + nickname " :No text to send" + CRLF)

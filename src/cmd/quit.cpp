@@ -13,7 +13,7 @@ void	Server::quit(std::vector<std::string> &tokens, int fd)
 {
 	std::string reason;
 
-	reason = splitQuit(tokens) + "\r\n";
+	reason = splitQuit(tokens) + CRLF;
 	for (size_t i = 0; i < this->channels.size(); i++)
 	{
 		if (this->channels[i]->getClient(fd))
