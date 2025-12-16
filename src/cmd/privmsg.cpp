@@ -1,5 +1,13 @@
 #include "../../inc/Server.hpp"
 
+//* Syntax: privmsg/PRIVMSG <recipient>,<recipient> :message
+//* Ex.: privmsg #bocal,dde-carv :Hello!
+
+//* ERR_NOSUCHNICK		(401)
+//* ERR_TOOMANYTARGETS	(407)
+//* ERR_NORECIPIENT		(411)
+//* ERR_NOTEXTTOSEND	(412)
+
 void	Server::splitPrivmsg(std::vector<std::string> &tokens, \
 std::vector<std::string> &recipients, \
 std::vector<std::string> &channPrivmsg, std::string &msg, int fd)
@@ -53,7 +61,7 @@ void	Server::privmsg(std::vector<std::string> &tokens, int fd)
 			"@localhost PRIVMSG " + recipients[i] + " :" + msgToSend, fdRecipient);
 		}
 		else
-			sendRsp(ERR_NOSUCHNICK(std::string ("PRIVMSG"), recipients[i]), fd);
+			sendRsp(ERR_NOSUCHNICK(recipients[i]), fd);
 	}
 	for (size_t i = 0; i < channRecipients.size(); i++)
 	{
@@ -61,6 +69,6 @@ void	Server::privmsg(std::vector<std::string> &tokens, int fd)
 			this->getChannel(channRecipients[i])->sendToAll(":" + this->getClientFd(fd)->getNickName() + "!~" + \
 			this->getClientFd(fd)->getUserName() + "@localhost PRIVMSG #" + channRecipients[i] + " :" + msgToSend);
 		else
-			sendRsp(ERR_NOSUCHNICK(channRecipients[i], this->getClientFd(fd)->getNickName()), fd);
+			sendRsp(ERR_NOSUCHCHANNEL(channRecipients[i], this->getClientFd(fd)->getNickName()), fd);
 	}
 }

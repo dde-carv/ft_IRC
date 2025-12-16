@@ -183,6 +183,7 @@ void	Server::receiveNewData(int fd)
 	char buffer[1024];
 	bzero(buffer, sizeof(buffer));
 	ssize_t  bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
+	Client *cli = getClientFd(fd);
 	if (_maxFd < 1020)
 	{
 		std::cout << buffer << std::endl;
@@ -190,8 +191,16 @@ void	Server::receiveNewData(int fd)
 			std::cout << "recv() failed." << std::endl;
 		else if (bytes == 0)
 			endConnection(fd);
-		// else
-		// 	handleMessage(fd, buffer);
+		else
+		{
+			cli->setBuffer(buffer);
+			if(cli->getBuffer().find_first_of("\r\n") == std::string::npos)
+				return;
+			// parseMessage(fd, buffer);
+			std::cout << cli->getBuffer();
+			if(getClientFd(fd))
+				getClientFd(fd)->clearBuffer();
+		}
 	}
 	else if (bytes == 0)
 			endConnection(fd);
@@ -212,11 +221,6 @@ void	Server::endConnection(int fd)
 		}
 	}
 }
-
-// void	handleMessage(int fd, char *buffer)
-// {
-
-// }
 
 // remove methods
 

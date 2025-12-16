@@ -30,3 +30,25 @@ std::string	findMsg(std::vector<std::string> &tokens)
 		temp = tokens[1];
 	return temp;
 }
+
+
+void	Server::parseMessage(std::string &cmd, int &fd)
+{
+	std::vector<std::string> tokens;
+	std::stringstream ss(cmd);
+	std::string tmp;
+
+	while(ss >> tmp)
+	{
+		tokens.push_back(tmp);
+		tmp.clear();
+	}
+
+	if (tokens.size())
+	{
+		if (tokens[0] == "NICK" || tokens[0] == "nick")
+			nick(tokens, fd);
+		if (tokens[0] == "PASS" || tokens[0] == "pass")
+			pass(tokens, fd);
+
+}

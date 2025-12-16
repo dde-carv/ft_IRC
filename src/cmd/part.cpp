@@ -1,5 +1,12 @@
 #include "../../inc/Server.hpp"
 
+//* Syntax: part/PART #<channel> :reason
+//* Ex.: part #bocal,#cluster1
+
+//* ERR_NOSUCHCHANNEL		(403)
+//* ERR_NOTONCHANNEL		(442)
+//* ERR_NEEDMOREPARAMS		(461)
+
 bool	Server::splitPart(std::vector<std::string> &tokens, \
 std::vector<std::string> &channPart, std::string &reason, int fd)
 {
@@ -25,7 +32,7 @@ std::vector<std::string> &channPart, std::string &reason, int fd)
 			channPart[i].erase(channPart[i].begin());
 		else
 		{
-			sendRsp(ERR_CHANNELNOTFOUND(this->getClientFd(fd)->getNickName(), channPart[i]), fd);
+			sendRsp(ERR_NOSUCHCHANNEL(this->getClientFd(fd)->getNickName(), channPart[i]), fd);
 			channPart.erase(channPart.begin() + i--);
 		}
 	}
@@ -40,7 +47,7 @@ void	Server::part(std::vector<std::string> &tokens, int fd)
 
 	tokens.erase(tokens.begin());
 	if (!splitPart(tokens, channPart, reason, fd))
-		return (sendRsp(ERR_NOTENOUGHPARAM(this->getClientFd(fd)->getNickName()), fd));
+		return (sendRsp(ERR_NEEDMOREPARAMS(this->getClientFd(fd)->getNickName()), fd));
 	for (size_t i = 0; i < channPart.size(); i++)
 	{
 		bool exist = false;
@@ -71,6 +78,6 @@ void	Server::part(std::vector<std::string> &tokens, int fd)
 			}
 		}
 		if (!exist)
-			sendRsp(ERR_CHANNELNOTFOUND(this->getClientFd(fd)->getNickName(), channPart[i]), fd);
+			sendRsp(ERR_NOSUCHCHANNEL(this->getClientFd(fd)->getNickName(), channPart[i]), fd);
 	}
 }

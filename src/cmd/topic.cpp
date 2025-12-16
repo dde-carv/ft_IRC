@@ -1,5 +1,16 @@
 #include "../../inc/Server.hpp"
-//!! ERR_NOTOPERATOR is not the right error
+
+//* Syntax: topic/TOPIC #<channel> :topic
+//* Ex.: TOPIC #bocal :Space to talk about equipment flaws
+
+//* RPL_NOTOPIC				(331)
+//* RPL_TOPICIS				(332)
+//* RPL_TOPICWHOTIME		(333)
+//* ERR_NOSUCHCHANNEL		(403)
+//* ERR_NOTONCHANNEL		(442)
+//* ERR_NEEDMOREPARAMS		(461)
+//* ERR_CHANOPRIVSNEEDED	(482)
+
 
 bool	findRestriction(bool restriction, Client* admin)
 {
@@ -36,11 +47,11 @@ void	Server::topic(std::vector<std::string> &tokens, int fd)
 
 	tokens.erase(tokens.begin());
 	if (!splitTopic(tokens, chanName, topic))
-		return (sendRsp(ERR_NOTENOUGHPARAM(this->getClientFd(fd)->getNickName()), fd));
+		return (sendRsp(ERR_NEEDMOREPARAMS(this->getClientFd(fd)->getNickName()), fd));
 	if (*(chanName.begin()) == '#')
 		chanName.erase(chanName.begin());
 	else
-		return (sendRsp(ERR_CHANNELNOTFOUND(this->getClientFd(fd)->getNickName(), chanName), fd));
+		return (sendRsp(ERR_NOSUCHCHANNEL(this->getClientFd(fd)->getNickName(), chanName), fd));
 	if (!this->getChannel(chanName)->getClient(fd) && !this->getChannel(chanName)->getAdmin(fd))
 		return (sendRsp(ERR_NOTONCHANNEL(this->getClientFd(fd)->getNickName(), "#" + chanName), fd));
 	if (tokens.size() == 1)
@@ -54,8 +65,8 @@ void	Server::topic(std::vector<std::string> &tokens, int fd)
 
 	bool restriction = findRestriction(this->getChannel(chanName)->getTopicRestriction(), this->getChannel(chanName)->getAdmin(fd));
 	if (restriction)
-		return (sendRsp(ERR_NOTOPERATOR(chanName), fd));
-	if (tokens.size() == 2 && tokens[1] == ":")
+		return (sendRsp(ERR_CHANOPRIVSNEEDED(chanName), fd));
+	else if (tokens.size() == 2 && tokens[1] == ":")
 	{
 		this->getChannel(chanName)->setChannelTopic("");
 		this->getChannel(chanName)->setTopicCreation("");
