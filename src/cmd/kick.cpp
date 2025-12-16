@@ -4,7 +4,7 @@ void	Server::kick(std::vector<std::string> &cmd, int &fd)
 {
 	if (cmd.size() < 3)
 	{
-		senderr(461, getClientFd(fd)->getNickName(), fd, ": Not enough parameters!\r\n");
+		sendRsp(ERR_NEEDMOREPARAMS(getClientFd(fd)->getNickName()), fd);
 		return ;
 	}
 
@@ -40,7 +40,7 @@ void	Server::kick(std::vector<std::string> &cmd, int &fd)
 
 		if (currentChannel.empty() || currentChannel[0] != '#')
 		{
-			senderr(403, getClientFd(fd)->getNickName(), currentChannel, fd, ": No such channel!\r\n");
+			sendRsp(ERR_NOSUCHCHANNEL(getClientFd(fd)->getNickName(), currentChannel), fd);
 			continue ;
 		}
 		currentChannel.erase(0, 1);
@@ -48,24 +48,24 @@ void	Server::kick(std::vector<std::string> &cmd, int &fd)
 		Channel *channel = getChannel(currentChannel);
 		if (!channel)
 		{
-			senderr(403, getClientFd(fd)->getNickName(), "#" + currentChannel, fd, ": No such channel!\r\n");
+			sendRsp(ERR_NOSUCHCHANNEL(getClientFd(fd)->getNickName(), currentChannel), fd);
 			continue ;
 		}
 		if (!channel->getClient(fd) && !channel->getAdmin(fd))
 		{
-			senderr(442, getClientFd(fd)->getNickName(), "#" + currentChannel, fd,  ": You are not in that channel!\r\n");
+			sendRsp(ERR_NOTONCHANNEL(getClientFd(fd)->getNickName(), currentChannel), fd);
 			continue ;
 		}
 		if (!channel->getAdmin(fd))
 		{
-			senderr(482, getClientFd(fd)->getNickName(), "#" + currentChannel, fd,  ": You are not a channel operator!\r\n");
+			sendRsp(ERR_CHANOPRIVSNEEDED(currentChannel), fd);
 			continue ;
 		}
 
 		Client *target = channel->getClientInChannel(user);
 		if (!target)
 		{
-			senderr(441, getClientFd(fd)->getNickName(), "#" + currentChannel, fd,  ": They are not in that channel!\r\n");
+			sendRsp(ERR_USERNOTINCHANNEL(getClientFd(fd)->getNickName(), target->getNickName(), currentChannel),fd);
 			continue ;
 		}
 

@@ -1,6 +1,6 @@
 //* Syntax: pass/PASS <password>
 
-//* ERR_NOTENOUGHPARAM (461)
+//* ERR_NEEDMOREPARAMS (461)
 //* ERR_INCORPASS (464)
 //* ERR_ALREADYREGISTERED (462)
 
@@ -11,7 +11,7 @@ void	Server::pass(std::vector<std::string> &cmd, int fd)
 	Client *cli = getClientFd(fd);
 	if (cmd.size() != 2)
 	{
-		sendRsp(ERR_NOTENOUGHPARAM(std::string("*")), fd);
+		sendRsp(ERR_NEEDMOREPARAMS(std::string("*")), fd);
 		return ;
 	}
 	else if (!cli->getRegistered())

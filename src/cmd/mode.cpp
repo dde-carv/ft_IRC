@@ -71,7 +71,7 @@ std::string Server::operatorPrivilegeMode(std::vector<std::string> tokens, Chann
 	}
 	if (!channel->getClientInChannel(user))
 	{
-		sendRsp(ERR_USERNOTINCHANNEL(channel->getName(), user), fd);
+		sendRsp(ERR_USERNOTINCHANNEL(getClientFd(fd)->getNickName() ,user, channel->getName()), fd);
 		return param;
 	}
 	if (opera == '+')
@@ -208,14 +208,14 @@ void	Server::mode(std::vector<std::string> &cmd, int fd)
 
 	if (cmd.size() < 2)
 	{
-		sendRsp(ERR_NOTENOUGHPARAM(client->getNickName()), fd);
+		sendRsp(ERR_NEEDMOREPARAMS(client->getNickName()), fd);
 		return ;
 	}
 	channelName = cmd[1];
 	channel = getChannel(channelName.substr(1));
 	if (channelName[0] != '#' || !channel)
 	{
-		sendRsp(ERR_CHANNELNOTFOUND(client->getNickName(), channelName), fd);
+		sendRsp(ERR_NOSUCHCHANNEL(client->getNickName(), channelName), fd);
 		return ;
 	}
 	else if (!channel->getClient(fd) && !channel->getAdmin(fd))
