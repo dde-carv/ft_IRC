@@ -72,6 +72,11 @@ bool	Client::getLogedIn()
 	return this->_logedIn;
 }
 
+std::string	Client::getBuffer()
+{
+	return this->_buffer;
+}
+
 bool	Client::getInviteToChannel(std::string &channelName)
 {
 	for (size_t i = 0; i < this->_channelInviteList.size(); i++)
@@ -119,6 +124,11 @@ void Client::setIpAdd(std::string ip)
 	this->_ip = ip;
 }
 
+void Client::setBuffer(std::string received)
+{
+	this->_buffer += received;
+}
+
 void	Client::AddChannelInvite(std::string &channelname)
 {
 	_channelInviteList.push_back(channelname);
@@ -134,4 +144,9 @@ void	Client::removeChannelInvite(std::string &channelName)
 			return ;
 		}
 	}
+}
+
+void Client::clearBuffer()
+{
+	_buffer.clear();
 }

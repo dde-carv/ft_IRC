@@ -38,6 +38,7 @@ class Server
 		std::vector<Client>			_clients;
 		std::vector<Channel>		_channels;
 		std::vector<struct pollfd>	_clientSocketFds;
+		std::map<int, std::string> _clientBuffers;
 		struct sockaddr_in			serverAddress;
 		struct sockaddr_in			clientAddress;
 		struct pollfd				newClient;
@@ -70,7 +71,7 @@ class Server
 		void		socketInit();
 		void		acceptNewClient();
 		void		receiveNewData(int fd);
-		// void	handleMessage(int fd, char *buffer);
+		void		handleMessage(int fd, char *buffer);
 		void		endConnection(int fd);
 
 		// remove methods

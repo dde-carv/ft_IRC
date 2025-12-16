@@ -9,6 +9,7 @@ class Client
 		std::string					_ip;
 		std::string					_nickName;
 		std::string					_userName;
+		std::string					_buffer;
 		bool						_operator;
 		bool						_registered;
 		bool						_logedIn;
@@ -32,6 +33,7 @@ class Client
 		std::string	getUserName();
 		std::string	getHostname();
 		std::string	getIpAddress();
+		std::string getBuffer();
 		bool		getOperator();
 		bool		getRegistered();
 		bool		getLogedIn();
@@ -41,6 +43,7 @@ class Client
 		void		setFd(int fd);
 		void		setNickName(std::string& nickname);
 		void		setUserName(std::string& username);
+		void		setBuffer(std::string received);
 		void		setOperator(bool value);
 		void		setRegistered(bool value);
 		void		setLogedin(bool value);
@@ -49,4 +52,5 @@ class Client
 		// methods
 		void		AddChannelInvite(std::string &channelname);
 		void		removeChannelInvite(std::string &channelName);
+		void		clearBuffer();
 };
