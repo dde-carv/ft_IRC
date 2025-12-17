@@ -16,12 +16,13 @@ int	main(int ac, char** av)
 
 	try
 	{
-		// signal(SIGINT, Server::signalHandler);
-		// signal(SIGQUIT, Server::signalHandler);
+		signal(SIGINT, Server::signalHandler);
+		signal(SIGQUIT, Server::signalHandler);
 		server.serverInit();
 	}
 	catch(const std::exception &e)
 	{
 		std::cerr << e.what() << std::endl;
+		server.closeFds();
 	}
 }

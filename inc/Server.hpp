@@ -33,7 +33,7 @@ class Server
 		int							_port;
 		int							_reserveFd;
 		int							_serverSocketFd;
-		bool						_signal;
+		static bool						_signal;
 		std::string					_password;
 		std::vector<Client>			_clients;
 		std::vector<Channel>		_channels;
@@ -71,7 +71,6 @@ class Server
 		void		socketInit();
 		void		acceptNewClient();
 		void		receiveNewData(int fd);
-		void		endConnection(int fd);
 		std::vector<std::string>	splitMessage(std:: string message);
 
 		// remove methods
@@ -79,7 +78,7 @@ class Server
 		void		removeClient(int fd);
 		void		removeChannel(std::string name);
 		// void	removeChannels(int fd);
-		// void	endConnection(int fd);
+		void	endConnection(int fd);
 
 		// send
 		void		sendRsp(std::string msg, int fd);
@@ -88,7 +87,7 @@ class Server
 		void		closeFds();
 
 		// signal methods
-		void		signalHandler(int signum);
+		static void		signalHandler(int signum);
 
 		// parsing
 		std::vector<std::string>	splitCmd(std::string &str);
@@ -104,20 +103,22 @@ class Server
 		void		nick(std::vector<std::string> &cmd, int fd);
 
 		// part cmd
+		void		splitChannelPart(std::vector<std::string> &channPart, std::string &temp);
 		bool		splitPart(std::vector<std::string> &tokens, std::vector<std::string> &channPart, std::string &reason, int fd);
-		void		part(std::vector<std::string> &tokens, int fd);
+		void		part(std::vector<std::string> &tokens, int &fd);
 
 		// privmsg cmd
+		void		splitRecipients(std::vector<std::string> &recipients, std::vector<std::string> &channPrivmsg, std::string &temp);
 		void		splitPrivmsg(std::vector<std::string> &tokens, std::vector<std::string> &recipients, std::vector<std::string> &channPrivmsg, std::string &msg, int fd);
-		void		privmsg(std::vector<std::string> &tokens, int fd);
+		void		privmsg(std::vector<std::string> &tokens, int &fd);
 
 		// quit cmd
 		std::string	splitQuit(std::vector<std::string> &tokens);
-		void		quit(std::vector<std::string> &tokens, int fd);
+		void		quit(std::vector<std::string> &tokens, int &fd);
 
 		// topic cmd
 		int			splitTopic(std::vector<std::string> &tokens, std::string &chanName, std::string &topic);
-		void		topic(std::vector<std::string> &tokens, int fd);
+		void		topic(std::vector<std::string> &tokens, int &fd);
 
 		// user cmd
 		void		user(std::vector<std::string> &cmd, int fd);

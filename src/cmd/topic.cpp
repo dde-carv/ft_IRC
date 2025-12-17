@@ -25,22 +25,23 @@ int	Server::splitTopic(std::vector<std::string> &tokens, std::string &chanName, 
 	if ((tokens.size() == 1 && tokens[0] == ":") || tokens.size() == 0)
 		return 0;
 	chanName = tokens[0];
-	if (tokens.size() >= 2)
+	if (tokens.size() >= 2 && tokens[1].substr(0, 2) != "::")
+		topic = tokens[1].substr(1);
+	else
 	{
-		for (size_t i = 0; i < tokens.size(); i++)
+		for (size_t i = 1; i < tokens.size(); i++)
 		{
-			if (i < tokens.size() - 1)
+			if (i == tokens.size() - 1)
 				topic += tokens[i];
 			else
 				topic += tokens[i] + " ";
 		}
-		if (topic[0] == ':')
-			topic = topic.substr(1);
+		topic = topic.substr(2);
 	}
 	return 1;
 }
 
-void	Server::topic(std::vector<std::string> &tokens, int fd)
+void	Server::topic(std::vector<std::string> &tokens, int &fd)
 {
 	std::string chanName;
 	std::string topic;
@@ -63,28 +64,10 @@ void	Server::topic(std::vector<std::string> &tokens, int fd)
 			sendRsp(RPL_TOPICWHOTIME(this->getClientFd(fd)->getNickName(), chanName, this->getChannel(chanName)->getTopicCreation()), fd));
 	}
 
-	bool restriction = findRestriction(this->getChannel(chanName)->getTopicRestriction(), this->getChannel(chanName)->getAdmin(fd));
-	if (restriction)
+	if (findRestriction(this->getChannel(chanName)->getTopicRestriction(), this->getChannel(chanName)->getAdmin(fd)))
 		return (sendRsp(ERR_CHANOPRIVSNEEDED(chanName), fd));
-	else if (tokens.size() == 2 && tokens[1] == ":")
-	{
-		this->getChannel(chanName)->setChannelTopic("");
-		this->getChannel(chanName)->setTopicCreation("");
-		return (this->getChannel(chanName)->sendToAll(":" + this->getClientFd(fd)->getNickName() + "!" + this->getClientFd(fd)->getUserName() + \
-		"localhost TOPIC #" + chanName + " :" + this->getChannel(chanName)->getChannelTopic() + CRLF));
-	}
-	else if (tokens.size() >= 2 && tokens[1][0] != ':')
-	{
-		this->getChannel(chanName)->setChannelTopic(tokens[1]);
-		this->getChannel(chanName)->setTopicCreation(currentTime());
-		return (this->getChannel(chanName)->sendToAll(":" + this->getClientFd(fd)->getNickName() + "!" + this->getClientFd(fd)->getUserName() + \
-		"localhost TOPIC #" + chanName + " :" + this->getChannel(chanName)->getChannelTopic() + CRLF));
-	}
-	else
-	{
-		this->getChannel(chanName)->setChannelTopic(topic);
-		this->getChannel(chanName)->setTopicCreation(currentTime());
-		this->getChannel(chanName)->sendToAll(":" + this->getClientFd(fd)->getNickName() + "!" + this->getClientFd(fd)->getUserName() + \
-		"localhost TOPIC #" + chanName + " :" + this->getChannel(chanName)->getChannelTopic() + CRLF);
-	}
+	this->getChannel(chanName)->setChannelTopic(topic);
+	this->getChannel(chanName)->setTopicCreation(currentTime());
+	this->getChannel(chanName)->sendToAll(":" + this->getClientFd(fd)->getNickName() + "!" + this->getClientFd(fd)->getUserName() + \
+	"localhost TOPIC #" + chanName + " :" + this->getChannel(chanName)->getChannelTopic() + CRLF);
 }

@@ -7,24 +7,34 @@
 //* ERR_NOTONCHANNEL		(442)
 //* ERR_NEEDMOREPARAMS		(461)
 
+void	Server::splitChannelPart(std::vector<std::string> &channPart, std::string &temp)
+{
+	if (temp.empty())
+		return ;
+	channPart.push_back(temp);
+	temp.clear();
+}
+
 bool	Server::splitPart(std::vector<std::string> &tokens, \
 std::vector<std::string> &channPart, std::string &reason, int fd)
 {
 	std::string temp;
+	size_t separ = tokens[0].find(',');
 
 	if (tokens.empty())
 		return false;
 	for (size_t i = 0; i < tokens[0].size(); i++)
 	{
+		if (separ == std::string::npos)
+		{
+			temp = tokens[0];
+			splitChannelPart(channPart, temp);
+			break ;
+		}
 		if (tokens[0][i] != ',')
 			temp += tokens[0][i];
 		else
-		{
-			if (temp.empty())
-				continue ;
-			channPart.push_back(temp);
-			temp.clear();
-		}
+			splitChannelPart(channPart, temp);
 	}
 	for (size_t i = 0; i < channPart.size(); i++)
 	{
@@ -40,7 +50,7 @@ std::vector<std::string> &channPart, std::string &reason, int fd)
 	return true;
 }
 
-void	Server::part(std::vector<std::string> &tokens, int fd)
+void	Server::part(std::vector<std::string> &tokens, int &fd)
 {
 	std::vector<std::string> channPart;
 	std::string reason;
@@ -67,7 +77,7 @@ void	Server::part(std::vector<std::string> &tokens, int fd)
 				if (!reason.empty())
 					msg += " :" + reason + CRLF;
 				else
-					msg += CRLF;
+					msg += " :Leaving\r\n";
 				this->_channels[j].sendToAll(msg);
 				if(this->_channels[j].getAdmin(fd))
 					this->_channels[j].removeAdmin(fd);
