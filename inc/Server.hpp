@@ -107,19 +107,20 @@ class Server
 
 		// part cmd
 		bool		splitPart(std::vector<std::string> &tokens, std::vector<std::string> &channPart, std::string &reason, int fd);
-		void		part(std::vector<std::string> &tokens, int fd);
+		void		part(std::vector<std::string> &tokens, int &fd);
 
 		// privmsg cmd
+		void		splitRecipients(std::vector<std::string> &recipients, std::vector<std::string> &channPrivmsg, std::string &temp);
 		void		splitPrivmsg(std::vector<std::string> &tokens, std::vector<std::string> &recipients, std::vector<std::string> &channPrivmsg, std::string &msg, int fd);
-		void		privmsg(std::vector<std::string> &tokens, int fd);
+		void		privmsg(std::vector<std::string> &tokens, int &fd);
 
 		// quit cmd
 		std::string	splitQuit(std::vector<std::string> &tokens);
-		void		quit(std::vector<std::string> &tokens, int fd);
+		void		quit(std::vector<std::string> &tokens, int &fd);
 
 		// topic cmd
 		int			splitTopic(std::vector<std::string> &tokens, std::string &chanName, std::string &topic);
-		void		topic(std::vector<std::string> &tokens, int fd);
+		void		topic(std::vector<std::string> &tokens, int &fd);
 
 		// user cmd
 		void		user(std::vector<std::string> &cmd, int fd);

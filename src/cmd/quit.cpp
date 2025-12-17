@@ -9,7 +9,7 @@ std::string Server::splitQuit(std::vector<std::string> &tokens)
 		return (findMsg(tokens));
 }
 
-void	Server::quit(std::vector<std::string> &tokens, int fd)
+void	Server::quit(std::vector<std::string> &tokens, int &fd)
 {
 	std::string reason;
 

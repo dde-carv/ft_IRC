@@ -237,7 +237,6 @@ std::vector<std::string>	Server::splitMessage(std::string message)
 		if (y != std::string::npos)
 		{
 			splitmessage.push_back(message.substr(i, y - i));
-			std::cout << splitmessage.back() << " dentro do split " << std::endl;
 			i = y;
 			temp.clear();
 		}
@@ -428,8 +427,3 @@ void	Server::parseMessage(std::string &cmd, int &fd)
 			sendRsp(ERR_NOTREGISTERED(std::string("*")), fd);
 	}
 }
-
-
-/* PASS PIXA
-NICK RICHARD
-USER ricmanue * 0 :realname */
