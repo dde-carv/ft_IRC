@@ -40,7 +40,7 @@ std::vector<std::string> &channPart, std::string &reason, int fd)
 	return true;
 }
 
-void	Server::part(std::vector<std::string> &tokens, int fd)
+void	Server::part(std::vector<std::string> &tokens, int &fd)
 {
 	std::vector<std::string> channPart;
 	std::string reason;

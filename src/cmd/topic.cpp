@@ -40,7 +40,7 @@ int	Server::splitTopic(std::vector<std::string> &tokens, std::string &chanName, 
 	return 1;
 }
 
-void	Server::topic(std::vector<std::string> &tokens, int fd)
+void	Server::topic(std::vector<std::string> &tokens, int &fd)
 {
 	std::string chanName;
 	std::string topic;
