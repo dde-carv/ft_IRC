@@ -33,7 +33,7 @@ class Server
 		int							_port;
 		int							_reserveFd;
 		int							_serverSocketFd;
-		bool						_signal;
+		static bool						_signal;
 		std::string					_password;
 		std::vector<Client>			_clients;
 		std::vector<Channel>		_channels;
@@ -71,7 +71,6 @@ class Server
 		void		socketInit();
 		void		acceptNewClient();
 		void		receiveNewData(int fd);
-		void		endConnection(int fd);
 		std::vector<std::string>	splitMessage(std:: string message);
 
 		// remove methods
@@ -79,7 +78,7 @@ class Server
 		void		removeClient(int fd);
 		void		removeChannel(std::string name);
 		// void	removeChannels(int fd);
-		// void	endConnection(int fd);
+		void	endConnection(int fd);
 
 		// send
 		void		senderr(int code, std::string clientname, int fd, std::string msg);
@@ -90,7 +89,7 @@ class Server
 		void		closeFds();
 
 		// signal methods
-		void		signalHandler(int signum);
+		static void		signalHandler(int signum);
 
 		// parsing
 		std::vector<std::string>	splitCmd(std::string &str);

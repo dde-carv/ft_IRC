@@ -1,6 +1,8 @@
 #include "Server.hpp"
 
-Server::Server() : _maxFd(2), _reserveFd(-1), _serverSocketFd(-1), _signal(false)
+bool Server::_signal = false;
+
+Server::Server() : _maxFd(2), _reserveFd(-1), _serverSocketFd(-1)
 {}
 
 Server::Server(Server const &og)
@@ -115,10 +117,6 @@ void	Server::serverInit()
 
 void	Server::socketInit()
 {
-	_reserveFd = open("/dev/null", O_RDONLY);
-	if (_reserveFd == -1)
-		std::cerr << "Warning: failed to open reserve fd" << std::endl;
-
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_addr .s_addr = INADDR_ANY;
 	serverAddress.sin_port = htons(this->_port);
@@ -388,22 +386,13 @@ void	Server::parseMessage(std::string &cmd, int &fd)
 	if (tokens.size())
 	{
 		if (tokens[0] == "NICK" || tokens[0] == "nick")
-		{
-			std::cout << " a entrar no nick" << std::endl;
 			nick(tokens, fd);
-		}
 		else if (tokens[0] == "PASS" || tokens[0] == "pass")
-		{
-			std::cout << " a entrar na pass" << std::endl;
 			pass(tokens, fd);
-		}
 		else if (tokens[0] == "QUIT" || tokens[0] == "quit")
 			quit(tokens, fd);
 		else if (tokens[0] == "USER" || tokens[0] == "user")
-		{
-			std::cout << " a entrar no user" << std::endl;
 			user(tokens, fd);
-		}
 		else if (registered(fd))
 		{
 			if (tokens[0] == "INVITE" || tokens[0] == "invite")

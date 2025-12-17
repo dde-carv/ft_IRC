@@ -56,7 +56,7 @@ void	*stress(void *p)
 
 	pthread_mutex_unlock(lock);
 
-	system("nc localhost 6697 && pwd");
+	system("nc localhost 6697");
 
 
 	return (NULL);
