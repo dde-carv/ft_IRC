@@ -197,7 +197,9 @@ void	Server::receiveNewData(int fd)
 			if(cli->getBuffer().find_first_of("\r\n") == std::string::npos)
 				return;
 			std::string message = buffer;
-			parseMessage(message, fd);
+			std::vector<std::string> splitedmessage = splitMessage(message);
+			for(size_t i = 0; i < splitedmessage.size(); i++)
+				parseMessage(splitedmessage[i], fd);
 			if(getClientFd(fd))
 				getClientFd(fd)->clearBuffer();
 		}
@@ -205,6 +207,8 @@ void	Server::receiveNewData(int fd)
 	else if (bytes == 0)
 			endConnection(fd);
 }
+
+
 
 void	Server::endConnection(int fd)
 {
@@ -220,6 +224,25 @@ void	Server::endConnection(int fd)
 			break ;
 		}
 	}
+}
+
+std::vector<std::string>	Server::splitMessage(std::string message)
+{
+	std::vector<std::string> splitmessage;
+	std::string temp;
+
+	for (size_t i = 0; i < message.size(); i++)
+	{
+		size_t y = message.find('\n', i);
+		if (y != std::string::npos)
+		{
+			splitmessage.push_back(message.substr(i, y - i));
+			std::cout << splitmessage.back() << " dentro do split " << std::endl;
+			i = y;
+			temp.clear();
+		}
+	}
+	return (splitmessage);
 }
 
 // remove methods
@@ -360,19 +383,28 @@ bool	Server::registered(int &fd)
 
 void	Server::parseMessage(std::string &cmd, int &fd)
 {
-	// std::cout << cmd << std::endl;
+	std::cout <<  "This is the command " << cmd << std::endl;
 	std::vector<std::string> tokens = splitCmd(cmd);
 
 	if (tokens.size())
 	{
 		if (tokens[0] == "NICK" || tokens[0] == "nick")
+		{
+			std::cout << " a entrar no nick" << std::endl;
 			nick(tokens, fd);
+		}
 		else if (tokens[0] == "PASS" || tokens[0] == "pass")
+		{
+			std::cout << " a entrar na pass" << std::endl;
 			pass(tokens, fd);
+		}
 		else if (tokens[0] == "QUIT" || tokens[0] == "quit")
 			quit(tokens, fd);
 		else if (tokens[0] == "USER" || tokens[0] == "user")
+		{
+			std::cout << " a entrar no user" << std::endl;
 			user(tokens, fd);
+		}
 		else if (registered(fd))
 		{
 			if (tokens[0] == "INVITE" || tokens[0] == "invite")
@@ -396,3 +428,8 @@ void	Server::parseMessage(std::string &cmd, int &fd)
 			sendRsp(ERR_NOTREGISTERED(std::string("*")), fd);
 	}
 }
+
+
+/* PASS PIXA
+NICK RICHARD
+USER ricmanue * 0 :realname */

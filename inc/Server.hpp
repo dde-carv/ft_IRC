@@ -71,8 +71,8 @@ class Server
 		void		socketInit();
 		void		acceptNewClient();
 		void		receiveNewData(int fd);
-		void		handleMessage(int fd, char *buffer);
 		void		endConnection(int fd);
+		std::vector<std::string>	splitMessage(std:: string message);
 
 		// remove methods
 		void		removeFds(int fd);
