@@ -5,7 +5,7 @@ SRC_DIR		=	src/
 CMD_DIR		=	src/cmd/
 OBJ_DIR		=	obj/
 
-CXX			=	c++ -Wall -Werror -std=c++98
+CXX			=	c++ -Wall -Werror -std=c++98 -g
 RM			=	rm -f
 
 SRCS			=	$(SRC_DIR)main.cpp \

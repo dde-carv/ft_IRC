@@ -117,10 +117,6 @@ void	Server::serverInit()
 
 void	Server::socketInit()
 {
-	_reserveFd = open("/dev/null", O_RDONLY);
-	if (_reserveFd == -1)
-		std::cerr << "Warning: failed to open reserve fd" << std::endl;
-
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_addr .s_addr = INADDR_ANY;
 	serverAddress.sin_port = htons(this->_port);
