@@ -380,7 +380,6 @@ bool	Server::registered(int &fd)
 
 void	Server::parseMessage(std::string &cmd, int &fd)
 {
-	std::cout <<  "This is the command " << cmd << std::endl;
 	std::vector<std::string> tokens = splitCmd(cmd);
 
 	if (tokens.size())
