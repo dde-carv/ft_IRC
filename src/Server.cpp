@@ -191,7 +191,6 @@ void	Server::receiveNewData(int fd)
 		else
 		{
 			cli->setBuffer(buffer);
-			std::cout << "getBuffer : " << cli->getBuffer() << std::endl;
 			if(cli->getBuffer().find_first_of("\r\n") == std::string::npos)
 				return;
 			std::vector<std::string> splitedmessage = splitMessage(cli->getBuffer());
