@@ -4,8 +4,10 @@ bool Server::_signal = false;
 
 Server::Server() : _maxFd(2), _reserveFd(-1), _serverSocketFd(-1), _password("")
 {
-	cmdFuncs = {&Server::nick, &Server::pass, &Server::quit, &Server::user, &Server::invite, &Server::join, \
-	&Server::kick, &Server::mode, &Server::part, &Server::privmsg, &Server::topic};
+	cmdFuncs.push_back(&Server::nick);cmdFuncs.push_back(&Server::pass);cmdFuncs.push_back(&Server::quit);
+	cmdFuncs.push_back(&Server::user);cmdFuncs.push_back(&Server::invite);cmdFuncs.push_back(&Server::join);
+	cmdFuncs.push_back(&Server::kick);cmdFuncs.push_back(&Server::mode);cmdFuncs.push_back(&Server::part);
+	cmdFuncs.push_back(&Server::privmsg);cmdFuncs.push_back(&Server::topic);
 }
 
 Server::Server(Server const &og)
@@ -368,37 +370,22 @@ void	Server::parseMessage(std::string &cmd, int &fd)
 	std::vector<std::string> tokens = splitCmd(cmd);
 	std::string cmdUpper[] = {"NICK", "PASS", "QUIT", "USER", "INVITE", "JOIN", "KICK", "MODE", "PART", "PRIVMSG", "TOPIC"};
 	std::string cmdLower[] = {"nick", "pass", "quit", "user", "invite", "join", "kick", "mode", "part", "privmsg", "topic"};
-	size_t sizeCmdList = 9;
+	size_t sizeCmdList = 11;
 
 	if (tokens.size())
 	{
 		for (size_t i = 0; i < sizeCmdList; i++)
 		{
-			if (!registered(fd) && (tokens[i] == cmdUpper[i] || tokens[i] == cmdLower[i]))
-				this->cmdFuncs[i](tokens, fd);
+			if (!registered(fd) && (tokens[0] == cmdUpper[i] || tokens[0] == cmdLower[i]))
+				return (this->*cmdFuncs[i])(tokens, fd);
 		}
-
-
-		if (registered(fd))
+		for (size_t i = 5; i < sizeCmdList; i++)
 		{
-			if (tokens[0] == "INVITE" || tokens[0] == "invite")
-				invite(tokens, fd);
-			else if (tokens[0] == "JOIN" || tokens[0] == "join")
-				join(tokens, fd);
-			else if (tokens[0] == "KICK" || tokens[0] == "kick")
-				kick(tokens, fd);
-			else if (tokens[0] == "MODE" || tokens[0] == "mode")
-				mode(tokens, fd);
-			else if (tokens[0] == "PART" || tokens[0] == "part")
-				part(tokens, fd);
-			else if (tokens[0] == "PRIVMSG" || tokens[0] == "privmsg")
-				privmsg(tokens, fd);
-			else if (tokens[0] == "TOPIC" || tokens[0] == "topic")
-				topic(tokens, fd);
-			else
-				sendRsp(ERR_UNKNOWNCOMMAND(this->getClientFd(fd)->getNickName(), tokens[0]), fd);
+			if (registered(fd) && (tokens[0] == cmdUpper[i] || tokens[0] == cmdLower[i]))
+				return (this->*cmdFuncs[i])(tokens, fd);
+			else if ( i == 10)
+				return sendRsp(ERR_UNKNOWNCOMMAND(this->getClientFd(fd)->getNickName(), tokens[0]), fd);
 		}
-		else
-			sendRsp(ERR_NOTREGISTERED(std::string("*")), fd);
+		sendRsp(ERR_NOTREGISTERED(std::string("*")), fd);
 	}
 }

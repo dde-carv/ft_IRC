@@ -44,7 +44,7 @@ class Server
 		struct sockaddr_in			serverAddress;
 		struct sockaddr_in			clientAddress;
 		struct pollfd				newClient;
-		CmdFunc 					*cmdFuncs;
+		std::vector<CmdFunc>		cmdFuncs;
 
 	public:
 
