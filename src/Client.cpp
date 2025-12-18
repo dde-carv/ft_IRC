@@ -5,9 +5,9 @@ Client::Client() : _fd(-1), _operator(false), _registered(false), _logedIn(false
 
 Client::Client(int fd, std::string nickname, std::string username)
 {
-	fd = _fd;
-	nickname = _nickName;
-	username = _userName;
+	_fd = fd;
+	_nickName = nickname;
+	_userName = username;
 }
 
 Client::Client(Client const &og)
@@ -22,6 +22,9 @@ Client&	Client::operator=(Client const &og)
 		this->_fd = og._fd;
 		this->_nickName = og._nickName;
 		this->_userName = og._userName;
+		this->_operator = og._operator;
+		this->_registered = og._registered;
+		this->_logedIn = og._logedIn;
 	}
 	return *this;
 }

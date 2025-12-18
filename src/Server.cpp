@@ -2,7 +2,7 @@
 
 bool Server::_signal = false;
 
-Server::Server() : _maxFd(2), _reserveFd(-1), _serverSocketFd(-1)
+Server::Server() : _maxFd(2), _reserveFd(-1), _serverSocketFd(-1), _password("")
 {}
 
 Server::Server(Server const &og)
@@ -97,20 +97,21 @@ void	Server::serverInit()
 
 	std::cout << "Server <" << _serverSocketFd << "> Connected" << std::endl;
 	std::cout << "Waiting to accept a connection...\n";
+
 	while (Server::_signal == false)
 	{
-			if((poll(&_clientSocketFds[0],_clientSocketFds.size(), -1) == -1) && Server::_signal == false)
-				throw(std::runtime_error("poll() failed"));
-			for (size_t i = 0; i < _clientSocketFds.size(); i++)
+		if((poll(&_clientSocketFds[0],_clientSocketFds.size(), -1) == -1) && Server::_signal == false)
+			throw(std::runtime_error("poll() failed"));
+		for (size_t i = 0; i < _clientSocketFds.size(); i++)
+		{
+			if (_clientSocketFds[i].revents & POLLIN)
 			{
-				if (_clientSocketFds[i].revents & POLLIN)
-				{
-						if (_clientSocketFds[i].fd == _serverSocketFd && _maxFd < 1021)
-							this->acceptNewClient();
-						else
-							this->receiveNewData(_clientSocketFds[i].fd);
-				}
+					if (_clientSocketFds[i].fd == _serverSocketFd && _maxFd < 1021)
+						this->acceptNewClient();
+					else
+						this->receiveNewData(_clientSocketFds[i].fd);
 			}
+		}
 	}
 	closeFds();
 }
@@ -165,7 +166,6 @@ void	Server::acceptNewClient()
 
 	Client client;
 	memset(&clientAddress, 0, sizeof(clientAddress));
-	// socklen_t len = sizeof(clientAddress);
 	newClient.fd = newFd;
 	newClient.events = POLLIN;
 	newClient.revents = 0;
@@ -178,13 +178,12 @@ void	Server::acceptNewClient()
 
 void	Server::receiveNewData(int fd)
 {
-	char buffer[1024];
+	char buffer[512];
 	bzero(buffer, sizeof(buffer));
 	ssize_t  bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
 	Client *cli = getClientFd(fd);
 	if (_maxFd < 1020)
 	{
-		std::cout << buffer;
 		if (bytes == -1)
 			std::cout << "recv() failed." << std::endl;
 		else if (bytes == 0)
@@ -192,10 +191,10 @@ void	Server::receiveNewData(int fd)
 		else
 		{
 			cli->setBuffer(buffer);
+			std::cout << "getBuffer : " << cli->getBuffer() << std::endl;
 			if(cli->getBuffer().find_first_of("\r\n") == std::string::npos)
 				return;
-			std::string message = buffer;
-			std::vector<std::string> splitedmessage = splitMessage(message);
+			std::vector<std::string> splitedmessage = splitMessage(cli->getBuffer());
 			for(size_t i = 0; i < splitedmessage.size(); i++)
 				parseMessage(splitedmessage[i], fd);
 			if(getClientFd(fd))

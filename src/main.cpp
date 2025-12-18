@@ -18,6 +18,7 @@ int	main(int ac, char** av)
 	{
 		signal(SIGINT, Server::signalHandler);
 		signal(SIGQUIT, Server::signalHandler);
+		signal(SIGPIPE, SIG_IGN);
 		server.serverInit();
 	}
 	catch(const std::exception &e)
