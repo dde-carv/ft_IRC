@@ -18,7 +18,7 @@ void	Server::user(std::vector<std::string> &cmd, int fd)
 		sendRsp(ERR_NEEDMOREPARAMS(client->getNickName()), fd);
 		return ;
 	}
-	if (!client || !client->getRegistered())
+	if (!client || !client->getRegistered() || cmd[2] != "0" || cmd [3] != "*")
 		sendRsp(ERR_NOTREGISTERED(std::string("*")), fd);
 	else if (client && !client->getUserName().empty())
 	{

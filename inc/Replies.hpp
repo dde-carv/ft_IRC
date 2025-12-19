@@ -23,7 +23,7 @@
 # define ERR_TOOMANYTARGETS(nickname) (": 407 " + nickname + " :Too many targets" + CRLF)
 # define ERR_NORECIPIENT(nickname) (": 411 " + nickname + " :No recipient given (PRIVMSG)" + CRLF)
 # define ERR_NOTEXTTOSEND(nickname) (": 412 " + nickname + " :No text to send" + CRLF)
-# define ERR_CMDNOTFOUND(nickname, command) (": 421 " + nickname + " " + command + " :Unknown command" + CRLF)
+# define ERR_UNKNOWNCOMMAND(nickname, command) (": 421 " + nickname + " " + command + " :Unknown command" + CRLF)
 # define ERR_NONICKNAMEGIVEN(nickname) (": 431 " + nickname + " :No nickname given" + CRLF)
 # define ERR_ERRONEUSNICKNAME(nickname) (": 432 " + nickname + " :Erroneus nickname" + CRLF)
 # define ERR_NICKNAMEINUSE(nickname) (": 433 " + nickname + " :Nickname is already in use" + CRLF)

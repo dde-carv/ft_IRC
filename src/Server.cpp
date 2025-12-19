@@ -390,7 +390,7 @@ void	Server::parseMessage(std::string &cmd, int &fd)
 			else if (tokens[0] == "TOPIC" || tokens[0] == "topic")
 				topic(tokens, fd);
 			else
-				sendRsp(ERR_CMDNOTFOUND(this->getClientFd(fd)->getNickName(), tokens[0]), fd);
+				sendRsp(ERR_UNKNOWNCOMMAND(this->getClientFd(fd)->getNickName(), tokens[0]), fd);
 		}
 		else
 			sendRsp(ERR_NOTREGISTERED(std::string("*")), fd);
