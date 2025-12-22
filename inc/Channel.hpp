@@ -73,8 +73,12 @@ class Channel
 		void				addAdmin(Client newClient);
 		void				removeClient(int fd);
 		void				removeAdmin(int fd);
+		/* Upgrade the normal client to a channel operator. */
 		bool				clientToAdmin(std::string &nick);
+		/* Downgrade a channel operator to a normal client. */
 		bool				adminToClient(std::string &nick);
+		/* Send a message to everyone in a channel including the sender. */
 		void				sendToAll(std::string repl);
+		/* Send a message to everyone in a channel except the sender. */
 		void				sendToEveryoneElse(std::string repl, int fd);
 };
