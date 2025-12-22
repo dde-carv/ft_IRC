@@ -156,7 +156,7 @@ void	Server::acceptNewClient()
 	this->_maxFd++;
 	std::cout << "New client: " << newFd << std::endl;
 	if (this->_maxFd > 1020)
-		throw (std::runtime_error("Max number of clients reached"));
+		std::cout << "Max number of clients reached" << std::endl;
 
 	Client client;
 	memset(&clientAddress, 0, sizeof(clientAddress));
