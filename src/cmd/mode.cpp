@@ -2,6 +2,7 @@
 
 #include "../../inc/Server.hpp"
 
+/* Appends the mode character to the mode string, ensuring the operator (+/-) is correctly placed. */
 std::string modeToAppend(std::string chain, char opera, char mode)
 {
 	std::stringstream ss;
@@ -19,6 +20,7 @@ std::string modeToAppend(std::string chain, char opera, char mode)
 	return ss.str();
 }
 
+/* Checks if the limit string contains only digits and is greater than 0. */
 bool validLimit(std::string limit)
 {
 	return (!(limit.find_first_not_of("0123456789")!= std::string::npos) && std::atoi(limit.c_str()) > 0);
@@ -103,6 +105,7 @@ std::string Server::operatorPrivilegeMode(std::vector<std::string> tokens, Chann
 	return param;
 }
 
+/* Checks if the password string is valid (alphanumeric or underscore). */
 bool validPassword(std::string password)
 {
 	if (password.empty())
@@ -160,6 +163,7 @@ std::string Server::passwordMode(std::vector<std::string> tokens, Channel *chann
 	return param;
 }
 
+/* Sets or unsets the topic restriction mode for a channel. */
 std::string topicRestriction(Channel *channel, char opera, std::string chain)
 {
 	std::string param;
@@ -179,6 +183,7 @@ std::string topicRestriction(Channel *channel, char opera, std::string chain)
 	return param;
 }
 
+/* Sets or unsets the invite-only mode for a channel. */
 std::string inviteOnly(Channel *channel, char opera, std::string chain)
 {
 	std::string param;

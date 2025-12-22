@@ -117,11 +117,15 @@ class Server
 			void		parseMessage(std::string &cmd, int &fd);
 
 		// pass cmd
+			/* Authenticates a client with the server password. */
 			void		pass(std::vector<std::string> &, int &);
 
 		// nick cmd
+			/* Checks if the characters in nickname are valid */
 			bool		validNick(std::string& nickName);
+			/* Checks if the nickname trying to be set is in use */
 			bool		nickInUse(std::string& nickName);
+			/* Sets or changes a client's nickname. */
 			void		nick(std::vector<std::string> &, int &);
 
 		// part cmd
@@ -143,25 +147,37 @@ class Server
 			void		topic(std::vector<std::string> &, int &);
 
 		// user cmd
+			/* Sets the username and realname for a client. */
 			void		user(std::vector<std::string> &, int &);
 
 		// invite cmd
+			/* Invites a user to a channel. */
 			void		invite(std::vector<std::string> &, int &);
 
 		// join cmd
+			/* Counts the number of channels a client is currently in. */
 			int			searchClientInChannels(std::string nick);
+			/* Handles the logic when a client tries to join a channel that doesn't exist (creates it). */
 			void		channelNotExist(std::vector<std::pair<std::string, std::string> > token, size_t i, int fd);
+			/* Handles the logic when a client tries to join an existing channel (checks permissions/modes). */
 			void		channelExist(std::vector<std::pair<std::string, std::string> > token, size_t i, size_t j, int fd);
+			/* Parses the JOIN command arguments, separating channel names and keys. */
 			int			splitJoin(std::vector<std::pair<std::string, std::string> > &token, std::vector<std::string> &cmd, int fd);
+			/* Adds a client to a channel, creating it if it doesn't exist. */
 			void		join(std::vector<std::string> &, int &);
 
 		// kick cmd
+			/* Forcibly removes a client from a channel. */
 			void		kick(std::vector<std::string> &, int &);
 
 		// mode cmd
+			/* Sets a user limit to a channel */
 			std::string	limitMode(std::vector<std::string> tokens, Channel *channel, size_t &pos, char opera, int fd, std::string &args, std::string chain);
+			/* Adds operator priviliges to a specific user */
 			std::string	operatorPrivilegeMode(std::vector<std::string> tokens, Channel *channel, size_t &pos, char opera, int fd, std::string &args, std::string chain);
+			/* Sets a password for the channel */
 			std::string	passwordMode(std::vector<std::string> tokens, Channel *channel, size_t &pos, char opera, int fd, std::string &args, std::string chain);
+			/* Changes the mode (settings/permissions) of a channel. */
 			void		mode(std::vector<std::string> &, int &);
 
 };

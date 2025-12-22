@@ -10,6 +10,7 @@
 
 #include "../../inc/Server.hpp"
 
+/* Checks if the client is invited to the channel. */
 bool	isInvited(Client *clt, std::string channelName, int flag)
 {
 	if (clt->getInviteToChannel(channelName))
