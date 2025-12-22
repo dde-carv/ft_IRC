@@ -35,10 +35,7 @@ int		Server::searchClientInChannels(std::string nick)
 void	Server::channelNotExist(std::vector<std::pair<std::string, std::string> > token, size_t i, int fd)
 {
 	if (searchClientInChannels(getClientFd(fd)->getNickName()) >= 10)
-	{
-		sendRsp(ERR_TOOMANYCHANNELS(getClientFd(fd)->getNickName()), fd);
-		return ;
-	}
+		return sendRsp(ERR_TOOMANYCHANNELS(getClientFd(fd)->getNickName()), fd);
 	Channel newChannel;
 	newChannel.setName(token[i].first);
 	newChannel.addAdmin(*getClientFd(fd));
@@ -54,31 +51,19 @@ void	Server::channelExist(std::vector<std::pair<std::string, std::string> > toke
 	if (this->_channels[j].getClientInChannel(getClientFd(fd)->getNickName()))
 		return ;
 	if (searchClientInChannels(getClientFd(fd)->getNickName()) >= 10)
-	{
-		sendRsp(ERR_TOOMANYCHANNELS(getClientFd(fd)->getNickName()), fd);
-		return ;
-	}
+		return sendRsp(ERR_TOOMANYCHANNELS(getClientFd(fd)->getNickName()), fd);
 	if (!this->_channels[j].getPassword().empty() && this->_channels[j].getPassword() != token[i].second)
 	{
 		if (!isInvited(getClientFd(fd), token[i].first, 0))
-		{
-			sendRsp(ERR_BADCHANNELKEY(getClientFd(fd)->getNickName(), token[i].first), fd);
-			return ;
-		}
+			return sendRsp(ERR_BADCHANNELKEY(getClientFd(fd)->getNickName(), token[i].first), fd);
 	}
 	if (this->_channels[j].getInviteOnly())
 	{
 		if (!isInvited(getClientFd(fd), token[i].first, 1))
-		{
-			sendRsp(ERR_INVITEONLYCHAN(getClientFd(fd)->getNickName(), token[i].first), fd);
-			return ;
-		}
+			return sendRsp(ERR_INVITEONLYCHAN(getClientFd(fd)->getNickName(), token[i].first), fd);
 	}
 	if (this->_channels[j].getLimitOfClients() && this->_channels[j].getNumberOfClients() >= this->_channels[j].getLimitOfClients())
-	{
-		sendRsp(ERR_CHANNELISFULL(getClientFd(fd)->getNickName(), token[i].first), fd);
-		return ;
-	}
+		return sendRsp(ERR_CHANNELISFULL(getClientFd(fd)->getNickName(), token[i].first), fd);
 	Client *clt = getClientFd(fd);
 	this->_channels[j].addClient(*clt);
 	if (_channels[j].getChannelTopic().empty())
@@ -161,15 +146,9 @@ void	Server::join(std::vector<std::string> &cmd, int &fd)
 {
 	std::vector<std::pair<std::string, std::string> > token;
 	if (!splitJoin(token, cmd, fd))
-	{
-		sendRsp(ERR_NEEDMOREPARAMS(getClientFd(fd)->getNickName()), fd);
-		return ;
-	}
+		return sendRsp(ERR_NEEDMOREPARAMS(getClientFd(fd)->getNickName()), fd);
 	if (token.size() > 10)
-	{
-		sendRsp(ERR_TOOMANYTARGETS(getClientFd(fd)->getNickName()), fd);
-		return ;
-	}
+		return sendRsp(ERR_TOOMANYTARGETS(getClientFd(fd)->getNickName()), fd);
 	for (size_t i = 0; i < token.size(); i++)
 	{
 		bool flag = false;
@@ -179,7 +158,7 @@ void	Server::join(std::vector<std::string> &cmd, int &fd)
 			{
 				channelExist(token, i, j, fd);
 				flag = true;
-				break;
+				break ;
 			}
 		}
 		if (!flag)

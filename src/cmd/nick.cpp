@@ -36,10 +36,7 @@ bool	Server::nickInUse(std::string &nickName)
 void	Server::nick(std::vector<std::string> &cmd, int &fd)
 {
 	if (cmd.size() != 2)
-	{
-		sendRsp(ERR_NONICKNAMEGIVEN(std::string("*")), fd);
-		return ;
-	}
+		return sendRsp(ERR_NONICKNAMEGIVEN(std::string("*")), fd);
 	std::string tmp;
 	Client *cli = getClientFd(fd);
 	if (nickInUse(cmd[1]) && cli->getNickName() != cmd[1])
@@ -47,14 +44,10 @@ void	Server::nick(std::vector<std::string> &cmd, int &fd)
 		tmp = "*";
 		if (cli->getNickName().empty())
 			cli->setNickName(tmp);
-		sendRsp(ERR_NICKNAMEINUSE(cmd[1]), fd);
-		return ;
+		return sendRsp(ERR_NICKNAMEINUSE(cmd[1]), fd);
 	}
 	if (!validNick(cmd[1]))
-	{
-		sendRsp(ERR_ERRONEUSNICKNAME(cmd[1]), fd);
-		return ;
-	}
+		return sendRsp(ERR_ERRONEUSNICKNAME(cmd[1]), fd);
 	else
 	{
 		//std::cout << "nickname: " << cmd[1] << std::endl;

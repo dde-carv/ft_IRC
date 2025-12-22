@@ -11,10 +11,7 @@
 void	Server::kick(std::vector<std::string> &cmd, int &fd)
 {
 	if (cmd.size() < 3)
-	{
-		sendRsp(ERR_NEEDMOREPARAMS(getClientFd(fd)->getNickName()), fd);
-		return ;
-	}
+		return sendRsp(ERR_NEEDMOREPARAMS(getClientFd(fd)->getNickName()), fd);
 
 	std::string channels = cmd[1];
 	std::string user = cmd[2];

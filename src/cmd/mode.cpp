@@ -209,33 +209,18 @@ void	Server::mode(std::vector<std::string> &cmd, int &fd)
 	char opera = '\0';
 
 	if (cmd.size() < 2)
-	{
-		sendRsp(ERR_NEEDMOREPARAMS(client->getNickName()), fd);
-		return ;
-	}
+		return sendRsp(ERR_NEEDMOREPARAMS(client->getNickName()), fd);
 	channelName = cmd[1];
 	channel = getChannel(channelName.substr(1));
 	if (channelName[0] != '#' || !channel)
-	{
-		sendRsp(ERR_NOSUCHCHANNEL(client->getNickName(), channelName), fd);
-		return ;
-	}
+		return sendRsp(ERR_NOSUCHCHANNEL(client->getNickName(), channelName), fd);
 	else if (!channel->getClient(fd) && !channel->getAdmin(fd))
-	{
-		sendRsp(ERR_NOTONCHANNEL(client->getNickName(), channelName), fd);
-		return ;
-	}
+		return sendRsp(ERR_NOTONCHANNEL(client->getNickName(), channelName), fd);
 	else if (cmd.size() == 2)
-	{
-		sendRsp(RPL_CHANNELMODES(client->getNickName(), channelName, channel->getModes()) + \
+		return sendRsp(RPL_CHANNELMODES(client->getNickName(), channelName, channel->getModes()) + \
 			RPL_CREATIONTIME(client->getNickName(), channelName, channel->getChannelCreation()), fd);
-		return ;
-	}
 	else if (!channel->getAdmin(fd))
-	{
-		sendRsp(ERR_CHANOPRIVSNEEDED(channelName), fd);
-		return ;
-	}
+		return sendRsp(ERR_CHANOPRIVSNEEDED(channelName), fd);
 
 	setMode = cmd[2];
 	std::vector<std::string> tokens;

@@ -14,43 +14,21 @@
 void	Server::invite(std::vector<std::string> &cmd, int &fd)
 {
 	if (cmd.size() < 3)
-	{
-		sendRsp(ERR_NEEDMOREPARAMS(getClientFd(fd)->getNickName()), fd);
-		return ;
-	}
+		return sendRsp(ERR_NEEDMOREPARAMS(getClientFd(fd)->getNickName()), fd);
 	std::string chanName = cmd[2].substr(1);
 	if ((cmd[2][0] != '#') || !getChannel(chanName))
-	{
-		sendRsp(ERR_NOSUCHCHANNEL(getClientFd(fd)->getNickName(), chanName), fd);
-		return ;
-	}
+		return sendRsp(ERR_NOSUCHCHANNEL(getClientFd(fd)->getNickName(), chanName), fd);
 	if (!(getChannel(chanName)->getClient(fd)) && !(getChannel(chanName)->getAdmin(fd)))
-	{
-		sendRsp(ERR_NOTONCHANNEL(getClientFd(fd)->getNickName(), chanName), fd);
-		return ;
-	}
+		return sendRsp(ERR_NOTONCHANNEL(getClientFd(fd)->getNickName(), chanName), fd);
 	if (getChannel(chanName)->getClientInChannel(cmd[1]))
-	{
-		sendRsp(ERR_USERONCHANNEL(getClientFd(fd)->getNickName(), chanName), fd);
-		return ;
-	}
+		return sendRsp(ERR_USERONCHANNEL(getClientFd(fd)->getNickName(), chanName), fd);
 	Client *clt = getClientNick(cmd[1]);
 	if (!clt)
-	{
-		sendRsp(ERR_NOSUCHNICK(cmd[1]), fd);
-		return ;
-	}
+		return sendRsp(ERR_NOSUCHNICK(cmd[1]), fd);
 	if (getChannel(chanName)->getInviteOnly() && !(getChannel(chanName)->getAdmin(fd)))
-	{
-		sendRsp(ERR_CHANOPRIVSNEEDED(chanName), fd);
-		return ;
-	}
+		return sendRsp(ERR_CHANOPRIVSNEEDED(chanName), fd);
 	if (getChannel(chanName)->getLimitOfClients() && getChannel(chanName)->getNumberOfClients() >= getChannel(chanName)->getLimitOfClients())
-	{
-		sendRsp(ERR_CHANNELISFULL(getClientFd(fd)->getNickName(), chanName), fd);
-		return ;
-	}
-	//? RPL_INVITING (341) if the invite was successfully sent
+		return sendRsp(ERR_CHANNELISFULL(getClientFd(fd)->getNickName(), chanName), fd);
 	clt->AddChannelInvite(chanName);
 	std::string rpl1 = (": 301 " + getClientFd(fd)->getNickName() + " " + clt->getNickName() + " " + cmd[2] + "\r\n");
 	sendRsp(rpl1, fd);

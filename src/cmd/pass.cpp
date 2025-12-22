@@ -10,10 +10,7 @@ void	Server::pass(std::vector<std::string> &cmd, int &fd)
 {
 	Client *cli = getClientFd(fd);
 	if (cmd.size() != 2)
-	{
-		sendRsp(ERR_NEEDMOREPARAMS(std::string("*")), fd);
-		return ;
-	}
+		return sendRsp(ERR_NEEDMOREPARAMS(std::string("*")), fd);
 	else if (!cli->getRegistered())
 	{
 		//std::cout << "password: " << cmd[1] << std::endl;
