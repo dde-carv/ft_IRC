@@ -20,7 +20,7 @@ void	Server::quit(std::vector<std::string> &tokens, int &fd)
 		{
 			this->_channels[i].removeClient(fd);
 			if (this->_channels[i].getNumberOfClients() == 0)
-				this->_channels.erase(this->_channels.begin() + i);
+				removeChannel(this->_channels[i].getName());
 			else
 				this->_channels[i].sendToAll(":" + this->getClientFd(fd)->getNickName() + \
 				"!~" + this->getClientFd(fd)->getUserName() + "@localhost QUIT " + reason);
@@ -29,7 +29,7 @@ void	Server::quit(std::vector<std::string> &tokens, int &fd)
 		{
 			this->_channels[i].removeAdmin(fd);
 			if (this->_channels[i].getNumberOfClients() == 0)
-				this->_channels.erase(this->_channels.begin() + i);
+				removeChannel(this->_channels[i].getName());
 			else
 				this->_channels[i].sendToAll(":" + this->getClientFd(fd)->getNickName() + \
 				"!~" + this->getClientFd(fd)->getUserName() + "@localhost QUIT " + reason);

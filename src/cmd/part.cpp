@@ -84,7 +84,7 @@ void	Server::part(std::vector<std::string> &tokens, int &fd)
 				else
 					this->_channels[j].removeClient(fd);
 				if (this->_channels[j].getNumberOfClients() == 0)
-					this->_channels.erase(this->_channels.begin() + j);
+					removeChannel(this->_channels[j].getName());
 			}
 		}
 		if (!exist)
