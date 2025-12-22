@@ -276,32 +276,6 @@ void	Server::removeChannel(std::string name)
 	}
 }
 
-/* void	Server::removeChannels(int fd)
-{
-	for (size_t i = 0; i < this->_channels.size(); i++)
-	{
-		int flag = 0;
-		if (_channels[i].get_client(fd))
-			_channels[i].remove_client(fd); flag = 1;
-
-		else if (_channels[i].get_admin(fd))
-			_channels[i].remove_admin(fd); flag = 1;
-
-		if (_channels[i].GetClientsNumber() == 0)
-		{
-			_channels.erase(_channels.begin() + i); i--;
-			continue;
-		}
-
-		if (flag)
-		{
-			std::string rpl = ":" + getClient(fd)->GetNickName() + "!~" + getClient(fd)->getUserName() + "@localhost QUIT Quit\r\n";
-			_channels[i].sendTo_all(rpl);
-		}
-	}
-} */
-
-
 // send
 
 void	Server::sendRsp(std::string msg, int fd)
