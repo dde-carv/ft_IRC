@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by dde-carv, luiribei, dicarval, ricmanue.*
+*This project has been created as part of the 42 curriculum by dicarval, ricmanue.*
 
 # ft_IRC
 
